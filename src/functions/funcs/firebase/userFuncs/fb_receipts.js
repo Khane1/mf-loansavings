@@ -1,7 +1,7 @@
 import {
     setDoc, doc, collection,
     query, where, updateDoc,
-} from 'Firebase/firestore';
+} from '../../../../../node_modules/Firebase/firestore';
 import { uuidv4 } from '@firebase/util';
 import { fb_db } from '../firebase_init';
 import { customDocumentTablelistenerTemplate, customQuerytablelistenerTemplate, tablelistenerTemplate } from './fb_universal';

@@ -1,6 +1,6 @@
 import {
     setDoc, doc, 
-} from 'Firebase/firestore';
+} from '../../../../../node_modules/Firebase/firestore';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';
 import { uuidv4 } from '@firebase/util';

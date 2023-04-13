@@ -1,6 +1,6 @@
 import {
      doc,getDoc, 
-} from 'Firebase/firestore';
+} from '../../../../../node_modules/Firebase/firestore';
 import { fb_db } from '../firebase_init';
 
 const businessDoc = (businessId) => doc(fb_db, 'business', businessId)

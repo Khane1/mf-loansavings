@@ -1,0 +1,6 @@
+{
+	"runtime": "nodejs16.x",
+	"handler": "..\\..\\..\\..\\..\\philip\\projects\\svelte mini apps\\mF-management-System\\.svelte-kit\\vercel-tmp\\index.js",
+	"launcherType": "Nodejs",
+	"experimentalResponseStreaming": true
+}

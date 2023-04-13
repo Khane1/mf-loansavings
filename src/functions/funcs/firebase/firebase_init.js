@@ -1,7 +1,7 @@
 import { initializeApp, } from 'firebase/app';
 import { getAuth, } from 'firebase/auth'
 import { axiosGetRoute } from '../script';
-import { getFirestore } from 'Firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
 // import { getsecrets } from '../server';
 // import { userModelStore, userStore } from '../stores';

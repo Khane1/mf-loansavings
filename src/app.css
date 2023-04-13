@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+    color: #333;
+	margin: 0;
+	padding: 8px;
+	box-sizing: border-box;
+}
+span{
+	cursor: pointer;
+}

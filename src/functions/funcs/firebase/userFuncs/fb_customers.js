@@ -1,6 +1,5 @@
 import {
-    setDoc, doc, getFirestore, collection,
-    getDocs, query, where, updateDoc, arrayUnion, getDoc, onSnapshot, limit
+    setDoc, doc, 
 } from 'Firebase/firestore';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';

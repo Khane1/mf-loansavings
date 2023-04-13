@@ -1,5 +1,5 @@
 import { storage } from "../firebase_init";
-import { getDownloadURL, getStorage, ref, uploadString } from "firebase/storage";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 const storageRef = (business, ref_child) => ref(storage, (business + '/' + ref_child + '.jpg'))
 
 ///////////////////////Image_Upload/////////////////////////////////////////

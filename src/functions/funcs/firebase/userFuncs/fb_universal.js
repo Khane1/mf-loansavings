@@ -1,6 +1,6 @@
 import {
-    setDoc, doc, getFirestore, collection,
-    getDocs, query, where, updateDoc, arrayUnion, getDoc, onSnapshot, limit
+    collection,
+    getDocs, query, onSnapshot
 } from 'Firebase/firestore';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';
@@ -46,14 +46,14 @@ export async function customQuerytablelistenerTemplate(customQuery, business_id,
                 store.update((e) => {
                     return { value: list, businessId: business_id };
                 });
-            }else cliq_notify('w','No results found')
+            } else cliq_notify('w', 'No results found')
         })
     } catch (error) {
         console.log(error.message);
     }
 }
 export async function customDocumentTablelistenerTemplate(customQuery, business_id, storage) {
-   
+
     try {
         await getDocs(customQuery).then((fb) => {
             let list = [];

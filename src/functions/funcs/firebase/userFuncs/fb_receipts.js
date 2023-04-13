@@ -1,6 +1,6 @@
 import {
-    setDoc, doc, getFirestore, collection,
-    getDocs, query, where, updateDoc, arrayUnion, getDoc, onSnapshot, limit
+    setDoc, doc, collection,
+    query, where, updateDoc,
 } from 'Firebase/firestore';
 import { uuidv4 } from '@firebase/util';
 import { fb_db } from '../firebase_init';
@@ -57,7 +57,7 @@ export async function getReceipts(bid) {
     await customQuerytablelistenerTemplate(query(receiptCol(bid), ...conditions), bid, receiptStore)
 }
 
-export async function getReceiptsByDate(bid,from,to) {
+export async function getReceiptsByDate(bid, from, to) {
     const conditions = [where('last_paid', '>=', new Date(from)), where('last_paid', '<=', new Date(dateTransfer(to)))]
     await customDocumentTablelistenerTemplate(query(receiptCol(bid), ...conditions), bid, receiptStore)
 }

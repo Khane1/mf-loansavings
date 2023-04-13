@@ -1,6 +1,5 @@
 import {
-    setDoc, doc, getFirestore, collection,
-    getDocs, query, where, updateDoc, arrayUnion, getDoc, onSnapshot, limit
+    doc, updateDoc, getDoc
 } from 'Firebase/firestore';
 import { userAuthStore } from '../../stores';
 import { fb_db } from '../firebase_init';

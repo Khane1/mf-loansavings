@@ -1,6 +1,5 @@
 import {
-    setDoc, doc, getFirestore, collection,
-    getDocs, query, where, updateDoc, arrayUnion, getDoc, onSnapshot, limit
+    setDoc, doc, updateDoc,
 } from 'Firebase/firestore';
 import { uuidv4 } from '@firebase/util';
 import { fb_db } from '../firebase_init';
@@ -22,10 +21,10 @@ export async function createLoan(bid, customerId, data) {
             await updateDoc(customerDoc(bid, customerId), {
                 status: 'active'
             })
-            cliq_notify('s','Loan created')
-            
+            cliq_notify('s', 'Loan created')
+
         } catch (error) {
-            cliq_notify('d','Error Occured Try again')
+            cliq_notify('d', 'Error Occured Try again')
             console.log(error);
         }
     } catch (error) {
@@ -36,5 +35,5 @@ export async function createLoan(bid, customerId, data) {
 
 export async function getLoans(bid,) {
     let cltn = 'business/' + bid + '/loans'
-   await tablelistenerTemplate(cltn, bid, loanStore)
+    await tablelistenerTemplate(cltn, bid, loanStore)
 }

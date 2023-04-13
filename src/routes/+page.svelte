@@ -24,23 +24,24 @@
 	import { signOut } from 'firebase/auth';
 	import { checkIfSignedIn } from '../functions/funcs/firebase/auth';
 	import Toast from '../components/reuseable/notificationsToast/toast.svelte';
+	import { refresh } from '../functions/funcs/dataStarter';
 	let y;
 	$: loggedIn =
 		typeof window != 'undefined' && $authstatusStore != undefined && $authstatusStore.length != 0
 			? $authstatusStore.code == 'authorized'
 			: false;
 	
-	function refresh() {
-		console.log('log');
-		checkIfSignedIn().then((e) => {
-			if (e != null) {
-				customerTablelistener($businessStore.BusinessId);
-				getLoans($businessStore.BusinessId);
-				getReceipts($businessStore.BusinessId);
-				getTeam($businessStore.BusinessId);
-			}
-		});
-	}
+	// function refresh() {
+	// 	console.log('log');
+	// 	checkIfSignedIn().then((e) => {
+	// 		if (e != null) {
+	// 			customerTablelistener($businessStore.BusinessId);
+	// 			getLoans($businessStore.BusinessId);
+	// 			getReceipts($businessStore.BusinessId);
+	// 			getTeam($businessStore.BusinessId);
+	// 		}
+	// 	});
+	// }
 	$: onlineStatus = typeof window != 'undefined' ? navigator.onLine : false;
 	onMount((e) => {
 		screenSizeStore.update((e) => {
@@ -51,7 +52,7 @@
 				if ($userAuthStore.name == undefined && $authstatusStore.code == 'authorized') {
 					userAuthStore.update((e) => JSON.parse($userAuthStore));
 				}
-				refresh();
+				refresh($businessStore.BusinessId);
 			}
 		}
 	});

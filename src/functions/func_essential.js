@@ -25,7 +25,7 @@ export function getDateToday() {
     var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
     var yyyy = today.getFullYear();
 
-    today = dd + "/" + mm + "/" + yyyy;
+    today = yyyy + "-" + mm + "-" + dd;
     return { today: today, year: yyyy, month: mm, day: dd };
 }
 
@@ -61,3 +61,18 @@ export function dateDiffInDays(a, b) {
 }
 
 
+export function sortCustomers(list,search) {
+    return list
+        .sort(function (a, b) {
+            if (a.data.name.charAt(0).toUpperCase() < b.data.name.charAt(0).toUpperCase()) {
+                return -1;
+            }
+            if (a.data.name.charAt(0).toUpperCase() > b.data.name.charAt(0).toUpperCase()) {
+                return 1;
+            }
+            return 0;
+        })
+        .filter((loan) => {
+            return loan.data.name.toLowerCase().includes(search.toLowerCase());
+        });
+}

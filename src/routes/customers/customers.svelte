@@ -11,6 +11,7 @@
 	import { businessStore, customersStore } from '../../functions/funcs/stores';
 	import AddCustomer from './addCustomer/addCustomer.svelte';
 	import CustomerDetail from './customer detail/customerDetail.svelte';
+	import { sortCustomers } from '../../functions/func_essential';
 	let isDetail = false;
 	let userData;
 	function getData(data) {
@@ -18,10 +19,12 @@
 		userData = data;
 	}
 	onMount((e) => {});
-	$: list =$customersStore.value != undefined ? $customersStore.value.sort((a, b) => b.data.name-a.data.name) : [];
-	$: customers = list.filter((loan) => {
-		return loan.data.name.toLowerCase().includes(search.toLowerCase());
-	});
+	$: list =
+		$customersStore.value != undefined
+			? $customersStore.value.sort((a, b) => b.data.name - a.data.name)
+			: [];
+
+	$: customers = sortCustomers(list,search) 
 	$: search = '';
 </script>
 
@@ -33,7 +36,13 @@
 
 		<div class=" flex justify-start">
 			<div class="w-30">
-				<Input placeholder="Search for customer" keydown={() => {}} bind:value={search} isText={true} type="text" />
+				<Input
+					placeholder="Search for customer"
+					keydown={() => {}}
+					bind:value={search}
+					isText={true}
+					type="text"
+				/>
 			</div>
 			<ActionBtn click={true} title={'GO'} />
 		</div>
@@ -42,7 +51,7 @@
 
 	<div class="pt-5" />
 	<!-- {JSON.stringify($businessStore.BusinessId)} -->
-	<div>	
+	<div>
 		<Table headers={['Name', 'Date Opened', 'Nin', 'Status', 'Contact', 'Completed', 'Total paid']}>
 			<!-- {#each  $historyDataStore as item} -->
 			<div class="hover:text-lg my-3" />

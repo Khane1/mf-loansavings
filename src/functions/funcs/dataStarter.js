@@ -9,9 +9,9 @@ export function refresh(bid) {
     checkIfSignedIn().then((e) => {
         if (e != null) {
             customerTablelistener(bid);
-            // getLoans(bid);
-            // getReceipts(bid);
-            // getTeam(bid);
+            getLoans(bid);
+            getReceipts(bid);
+            getTeam(bid);
         }
     });
 }

@@ -1,6 +1,6 @@
 import {
     doc, updateDoc, getDoc
-} from '../../../../../node_modules/Firebase/firestore';
+} from 'firebase/firestore';
 import { userAuthStore } from '../../stores';
 import { fb_db } from '../firebase_init';
 import { uploadItemImage } from './fb_imageUpload';

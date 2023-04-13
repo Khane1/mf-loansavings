@@ -1,7 +1,7 @@
 import {
     collection,
     getDocs, query, onSnapshot
-} from '../../../../../node_modules/Firebase/firestore';
+} from 'firebase/firestore';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';
 

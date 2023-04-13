@@ -30,7 +30,7 @@
 		typeof window != 'undefined' && $authstatusStore != undefined && $authstatusStore.length != 0
 			? $authstatusStore.code == 'authorized'
 			: false;
-	
+
 	// function refresh() {
 	// 	console.log('log');
 	// 	checkIfSignedIn().then((e) => {
@@ -59,7 +59,6 @@
 </script>
 
 <svelte:window bind:innerWidth={y} />
-{loggedIn}
 {#if y > 1000}
 	{loggedIn}
 	{#if loggedIn}
@@ -74,10 +73,6 @@
 			<div class="pl-96 pt-10 px-16">
 				<Routes />
 			</div>
-			<div class="pl-96">
-				<!-- {JSON.stringify($businessStore)} -->
-			</div>
-
 			<Sidebar />
 		{:else}
 			<div class="flex justify-center mt-32">
@@ -91,9 +86,6 @@
 			</h1>
 		{/if}
 	{:else}
-		{JSON.stringify($userAuthStore)}
-		<!-- <div on:keypress on:click={()=>getsecrets()}>click here</div> -->
-
 		<OpeningScreen />
 	{/if}
 {:else}

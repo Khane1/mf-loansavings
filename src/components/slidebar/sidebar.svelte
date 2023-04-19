@@ -27,7 +27,7 @@
 		<HeaderSidebar title="Micro Finance Manager" />
 		<h1 style="text-transform:capitalize" class="text-slate-300 text-sm">{$businessStore.name}</h1>
 	</div>
-	<div class="mt-5">
+	<div class="mt-12">
 		<ul class="relative align-middle">
 			{#each btnTtl as item}
 				<li class="relative">
@@ -58,7 +58,7 @@
 
 <style>
 	li {
-		padding-top: 40px;
+		padding-top: 30px;
 	}
 	aside {
 		padding: 25px;

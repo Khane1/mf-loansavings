@@ -11,7 +11,6 @@ async function appInit() {
 }
 export const appLoad = async () => {
     const secrets = await axiosGetRoute({}, '/api/getsecrets', {});
-    console.log(secrets);
     return secrets.data.secrets
 }
 let firebaseConfig = await appInit()

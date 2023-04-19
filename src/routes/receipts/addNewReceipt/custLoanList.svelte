@@ -11,7 +11,7 @@
 		{#each $loanStore.value as loan, index}
 			{#if loan.data.balance > 0}
 				<LoanUserCard
-					src="https://images.unsplash.com/photo-1605980776566-0486c3ac7617?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8YmxhY2slMjBwZXJzb258ZW58MHx8MHx8&w=1000&q=80"
+					src={loan.data.userUrl}
 					name={loan.data.borrower}
 					status={'active'}
 					{index}

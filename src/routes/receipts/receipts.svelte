@@ -12,12 +12,15 @@
 	let addReceipt = false;
 	let loanDetail = false;
 	let loanData;
+	let page = 'receipts';
 </script>
 
-{#if addReceipt}
-	<NewReceipt bind:addReceipt />
-{:else if loanDetail}
-	<LoanDetail bind:loanData bind:isDetail={loanDetail} />
-{:else}
-	<ReceiptHome bind:loanDetail bind:loanData bind:addReceipt />
-{/if}
+
+	{#if addReceipt}
+		<NewReceipt bind:addReceipt />
+	{:else if loanDetail}
+		<LoanDetail bind:loanData bind:isDetail={loanDetail} />
+	{:else}
+		<ReceiptHome bind:loanDetail bind:loanData bind:addReceipt />
+	{/if}
+

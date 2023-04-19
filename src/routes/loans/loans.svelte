@@ -5,8 +5,7 @@
 	import LoanHome from './home/loan_home.svelte';
 	let isDetail = false;
 	let newLoan = false;
-	let loanData;
-	
+	let loanData=[];
 </script>
 
 {#if isDetail}

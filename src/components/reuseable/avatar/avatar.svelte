@@ -18,7 +18,7 @@
 	function changePage() {}
 </script>
 
-{#if src != 'undefined' && src.length > 0 && (upload != 'undefined' || upload == false)}
+{#if src != 'undefined' && src?.length > 0 && (upload != 'undefined' || upload == false)}
 	<img
 		on:keypress
 		style="object-fit:cover"
@@ -28,10 +28,24 @@
 		{src}
 		alt="Bordered avatar"
 	/>
-{:else if avatar!=undefined}
-<div>
-	<div class="flex justify-center">
-		<img
+{:else if src == undefined || src?.length == 0}
+	<div>
+		<div class="flex justify-center">
+			<img
+				on:keypress
+				style="object-fit:cover"
+				class="{size == 0
+					? 'w-10 h-10'
+					: 'w-20 h-20'} p-1 rounded-full ring-2 ring-slate-800 dark:ring-gray-500"
+				src="https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+				alt="Bordered avatar"
+			/>
+		</div>
+	</div>
+{:else if avatar != undefined}
+	<div>
+		<div class="flex justify-center">
+			<img
 				on:keypress
 				style="object-fit:cover"
 				class="{size == 0
@@ -39,16 +53,16 @@
 					: 'w-20 h-20'} p-1 rounded-full hover:blur-sm hover:ring-red-600 ring-2 ring-slate-800 dark:ring-gray-500"
 				src={avatar}
 				on:click={() => {
-					avatar=undefined
-					cliq_notify('d','Image removed')
+					avatar = undefined;
+					cliq_notify('d', 'Image removed');
 				}}
 				alt="Bordered avatar"
 			/>
-	</div>
+		</div>
 		<div class="text-xs pt-2">
 			<span>Click image to remove it</span>
 		</div>
-</div>
+	</div>
 {:else}
 	<Modal
 		createTitle={'continue'}

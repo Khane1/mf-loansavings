@@ -10,6 +10,7 @@
 		MoneyFormat,
 		timestampToDateTime
 	} from '../../../functions/func_essential';
+	import { stringify } from 'postcss';
 	export let isDetail, loanData;
 </script>
 
@@ -26,11 +27,7 @@
 	<div class="flex justify-evenly border border-black-50 py-10 rounded-xl mx-10 bg-slate-50">
 		<div class="pt-1 justify-center space-y-3">
 			<div class="flex justify-center">
-				<Avatar
-					size={1}
-					src={loanData.userUrl ??
-						'https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aHVtYW4lMjBmYWNlfGVufDB8fDB8fA%3D%3D&w=1000&q=80'}
-				/>
+				<Avatar size={1} src={loanData.userUrl} />
 			</div>
 			<!-- <div class="text-sm">{loanData.borrower} Kawooya</div> -->
 		</div>

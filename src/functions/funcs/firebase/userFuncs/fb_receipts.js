@@ -14,7 +14,7 @@ const receiptCol = (businessId) => collection(fb_db, 'business', businessId, 're
 const loanDoc = (businessId, loan_Id) => doc(fb_db, 'business', businessId, 'loans', loan_Id)
 const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessId, 'customers', customerId)
 
-export async function createReceipt(bid, data, balance, loan) {
+export async function createReceipt(bid, data, balance, loan,userData) {
     let receiptId = uuidv4()
     console.log(bid, receiptId, data);
     data['receiptId'] = receiptId;
@@ -26,7 +26,7 @@ export async function createReceipt(bid, data, balance, loan) {
         if (balance <= 0) {
             await updateDoc(customerDoc(bid, loan.customerId), {
                 status: 'inactive',
-                paid: loan.Loan
+                paid: parseInt(loan.Loan) + parseInt(userData[0].data.paid)
             })
             await updateDoc(loanDoc(bid, loan.loanId), {
                 balance: balance

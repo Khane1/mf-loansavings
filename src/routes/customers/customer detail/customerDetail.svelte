@@ -5,6 +5,7 @@
 	import AddCstmr from '../../../components/reuseable/customer/addCstmr.svelte';
 	import CtmrDtl from '../../../components/reuseable/customer/ctmrDtl.svelte';
 	import PageTitle from '../../../components/reuseable/title/pageTitle.svelte';
+	import { MoneyFormat } from '../../../functions/func_essential';
 	import GiveLoan from '../../loans/issueLoan/giveLoan/giveLoan.svelte';
 	export let isDetail, userData;
 </script>
@@ -24,8 +25,7 @@
 	<div class="border shadow-2xl w-auto  rounded-3xl p-8  ">
 		<div class="flex justify-center  pt-5 ">
 			<Avatar
-				src={userData.userUrl ??
-					'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Uganda_-_Ruwenzori_Mountain_Lady.jpg/330px-Uganda_-_Ruwenzori_Mountain_Lady.jpg'}
+				src={userData.userUrl}
 				size={2}
 			/>
 		</div>
@@ -40,7 +40,7 @@
 				<CtmrDtl title={'Nin number'} data={userData.nin} />
 				<CtmrDtl title={'Work'} data={userData.occupation} />
 				<CtmrDtl title={'Date_Opened'} data={userData.opened.toDate().toDateString()} />
-				<CtmrDtl title={'Total_paid'} data={userData.paid} />
+				<CtmrDtl title={'Total_paid'} data={MoneyFormat(userData.paid)} />
 			</div>
 			<div class=" w-60  border  px-3 rounded-lg">
 				<CtmrDtl title={'Assigned_by'} data={userData.fieldAgent} />
@@ -53,8 +53,7 @@
 	<div class=" px-5 pt-10 space-y-1  border shadow-xl rounded-2xl">
 		<div class="flex justify-center">
 			<Avatar
-				src={userData.gua_Url ??
-					'https://img.freepik.com/free-photo/worldface-ugandan-man-white-background_53876-30388.jpg'}
+				src={userData.gua_Url}
 				size={0}
 			/>
 		</div>

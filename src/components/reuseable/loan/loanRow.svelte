@@ -14,7 +14,7 @@
     <!-- {item.qty} -->
 </td>
 <td class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
-        {MoneyFormat(loan.balance)}
+        {MoneyFormat((loan.toBePaid-loan.balance))}
     <!-- {MoneyFormat(item.total)} -->
 </td>
 <td class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">

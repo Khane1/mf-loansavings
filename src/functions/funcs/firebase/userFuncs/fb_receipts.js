@@ -30,12 +30,12 @@ export async function createReceipt(business, data, balance, loan, userData) {
 
         if (balance <= 0) {
             await updateDoc(customerDoc(business.BusinessId, loan.customerId), {
-                status: 'inactive',
+                status: 'inactive', completed: parseInt(userData[0].data.completed) + 1,
                 paid: parseInt(loan.Loan) + parseInt(userData[0].data.paid)
             })
             await updateDoc(loanDoc(business.BusinessId, loan.loanId), {
-                balance: balance
-                , lastpaid: new Date(), status: 'complete'
+                balance: balance,
+                lastpaid: new Date(), status: 'complete'
             })
             cliq_notify('s', 'Loan Payment Complete')
         } else {

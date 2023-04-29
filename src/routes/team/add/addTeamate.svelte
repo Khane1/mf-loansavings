@@ -23,7 +23,7 @@
 </script>
 
 <Modal
-	createTitle={'Save Customer'}
+	createTitle={'Save Member'}
 	title={'Add Team member ✜'}
 	modalTitle={'Team member'}
 	nextButton={formNo < 2}

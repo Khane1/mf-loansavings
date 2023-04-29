@@ -12,6 +12,7 @@
 	} from '../../../../functions/func_essential';
 	import { createLoan } from '../../../../functions/funcs/firebase/userFuncs/fb_loans';
 	import { businessStore } from '../../../../functions/funcs/stores';
+	import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 	$: formNo = 1;
 	function changePage() {
 		formNo++;
@@ -29,6 +30,7 @@
 	};
 	$: interest = (amount * percentage) / 100;
 	$: toBePaid = parseInt(interest) + parseInt(amount);
+	$: capital = $businessStore.capital;
 	export let data;
 	export let c_id;
 </script>
@@ -40,25 +42,35 @@
 	nextButton={formNo < 4}
 	nextFunc={() => changePage()}
 	close={() => (formNo = 1)}
-	action={() =>
-		createLoan($businessStore.BusinessId, c_id, {
-			borrower: data.name,
-			customerId: c_id,
-			Loan: amount,
-			collateral,
-			interest,
-			toBePaid,
-			loan_term,
-			Opening_Fee: openingFee,
-			type: 'original',
-			interest,
-			loan_date_iss,
-			loan_due: new Date(loan_due),
-			balance: toBePaid,
-			date: new Date(),
-			lastpaid: '',
-			userUrl: data.userUrl ?? ''
-		})}
+	action={() => {
+		if (capital >= amount && amount > 0) {
+			createLoan($businessStore, c_id, {
+				borrower: data.name,
+				customerId: c_id,
+				Loan: amount,
+				collateral,
+				interest,
+				toBePaid,
+				loan_term,
+				Opening_Fee: openingFee,
+				type: 'original',
+				interest,
+				loan_date_iss,
+				loan_due: new Date(loan_due),
+				balance: toBePaid,
+				date: new Date(),
+				lastpaid: '',
+				userUrl: data.userUrl ?? '',
+				status: 'active'
+			});
+		} else {
+			cliq_notify(
+				'd',
+				"You can't issue" +
+					(capital < amount ? ' a loan more than capital available.' : ' a loan amount of 0.')
+			);
+		}
+	}}
 >
 	<div class="space-y-5">
 		{#if formNo == 1}

@@ -8,33 +8,38 @@ import { customDocumentTablelistenerTemplate, customQuerytablelistenerTemplate, 
 import { loanStore, receiptStore } from '../../stores';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { dateTransfer, getDateToday } from '../../../../functions/func_essential';
+import { updateCapital } from './fb_business';
 const receiptDoc = (businessId, receiptId) => doc(fb_db, 'business', businessId, 'receipt', receiptId)
 const receiptCol = (businessId) => collection(fb_db, 'business', businessId, 'receipt')
 
 const loanDoc = (businessId, loan_Id) => doc(fb_db, 'business', businessId, 'loans', loan_Id)
 const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessId, 'customers', customerId)
 
-export async function createReceipt(bid, data, balance, loan,userData) {
+export async function createReceipt(business, data, balance, loan, userData) {
     let receiptId = uuidv4()
-    console.log(bid, receiptId, data);
+    let capital = business.capital + data['amount'];
+    console.log(business.BusinessId, receiptId, data);
     data['receiptId'] = receiptId;
+
     try {
-        await setDoc(receiptDoc(bid, receiptId),
+        await setDoc(receiptDoc(business.BusinessId, receiptId),
             data,
         )
 
+        await updateCapital(business.BusinessId, capital);
+
         if (balance <= 0) {
-            await updateDoc(customerDoc(bid, loan.customerId), {
+            await updateDoc(customerDoc(business.BusinessId, loan.customerId), {
                 status: 'inactive',
                 paid: parseInt(loan.Loan) + parseInt(userData[0].data.paid)
             })
-            await updateDoc(loanDoc(bid, loan.loanId), {
+            await updateDoc(loanDoc(business.BusinessId, loan.loanId), {
                 balance: balance
                 , lastpaid: new Date(), status: 'complete'
             })
             cliq_notify('s', 'Loan Payment Complete')
         } else {
-            await updateDoc(loanDoc(bid, loan.loanId), {
+            await updateDoc(loanDoc(business.BusinessId, loan.loanId), {
                 balance: balance
                 , lastpaid: new Date()
             })

@@ -12,6 +12,7 @@ export let businessStore = persist(writable([]),typeof window!==undefined? creat
 export let authstatusStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'status')
 export let customersStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'customers')
 export let loanStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'loan')
+export let reportStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'report')
 export let receiptStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'receipts')
 export let teamStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'team')
 export let emailStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'email')

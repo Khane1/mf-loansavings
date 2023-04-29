@@ -11,14 +11,13 @@ export function signIn(email, password) {
     signInWithEmailAndPassword(auth, email.trim(), password)
         .then(async function () {
             let userData = await getUser(auth.currentUser.uid)
-            let businessData = await getBusiness(userData.businessId)
+            await getBusiness(userData.businessId)
             userAuthStore.update((e) => { return userData })
-            businessStore.update((e) => { return businessData })
             refresh(userData.businessId);
             authstatusStore.update((e) => { return { status: 200, code: 'authorized' } })
             cliq_notify('s', 'SignedIn')
         }).catch((err) => {
-            updateUserStore(err)
+            console.log(err)
         })
 }
 export async function signOut() {

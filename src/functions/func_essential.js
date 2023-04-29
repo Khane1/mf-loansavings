@@ -38,6 +38,15 @@ export function dateTransfer(date) {
     // today = yyyy + "/" + mm + "/" + dd;
     return yyyy + '-' + mm + '-' + (parseInt(dd) + 1);
 }
+export function customDate(date) {
+    var today = new Date(date);
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    var yyyy = today.getFullYear();
+
+    // today = yyyy + "/" + mm + "/" + dd;
+    return yyyy + '-' + mm + '-' + (parseInt(dd) + 1);
+}
 export let roles = { admin: 'admin', manager: 'manager', cashier: 'cashier', fieldAgent: 'fieldAgent', unallocated: 'unallocated' };
 
 export function execRights(user) {

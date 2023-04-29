@@ -8,10 +8,11 @@
 	import Table from '../../components/reuseable/tables/table.svelte';
 	import HeaderSidebar from '../../components/reuseable/title/headerSidebar.svelte';
 	import PageTitle from '../../components/reuseable/title/pageTitle.svelte';
-	import { businessStore, customersStore } from '../../functions/funcs/stores';
+	import { businessStore, customersStore, screenSizeStore } from '../../functions/funcs/stores';
 	import AddCustomer from './addCustomer/addCustomer.svelte';
 	import CustomerDetail from './customer detail/customerDetail.svelte';
 	import { sortCustomers } from '../../functions/func_essential';
+	import CustomerTable from './table/customerTable.svelte';
 	let isDetail = false;
 	let userData;
 	function getData(data) {
@@ -24,47 +25,47 @@
 			? $customersStore.value.sort((a, b) => b.data.name - a.data.name)
 			: [];
 
-	$: customers = sortCustomers(list,search) 
+	$: customers = sortCustomers(list, search);
 	$: search = '';
 </script>
 
-{#if isDetail}
-	<CustomerDetail bind:isDetail bind:userData />
-{:else}
-	<div class="flex justify-between">
-		<PageTitle title="Customers 😊" />
+{#if $screenSizeStore.size < 1000}
+<div class="flex justify-between">
 
-		<div class=" flex justify-start">
-			<div class="w-30">
-				<Input
-					placeholder="Search for customer"
-					keydown={() => {}}
-					bind:value={search}
-					isText={true}
-					type="text"
-				/>
-			</div>
-			<ActionBtn click={true} title={'GO'} />
-		</div>
-		<AddCustomer />
+	<div class="mb-5 pl-2">
+		<PageTitle title='Customers'/>
 	</div>
-
-	<div class="pt-5" />
-	<!-- {JSON.stringify($businessStore.BusinessId)} -->
+		<AddCustomer />
+</div>
 	<div>
-		<Table headers={['Name', 'Date Opened', 'Nin', 'Status', 'Contact', 'Completed', 'Total paid']}>
-			<!-- {#each  $historyDataStore as item} -->
-			<div class="hover:text-lg my-3" />
-			{#if list != undefined}
-				<!-- {JSON.stringify($customersStore.value)} -->
-				{#each customers as customer}
-					{#if customer.data != undefined}
-						<div class="mt-2" />
-						<TableRow bind:data={customer.data} bind:isDetail bind:userData />
-					{/if}
-				{/each}
-			{/if}
-			<!-- {/each} -->
-		</Table>
+		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
 	</div>
 {/if}
+{#if $screenSizeStore.size > 1000}
+	{#if isDetail}
+		<CustomerDetail bind:isDetail bind:userData />
+	{:else}
+		<div class="flex justify-between">
+			<PageTitle title="Customers 😊" />
+
+			<div class=" flex justify-start">
+				<div class="w-30">
+					<Input
+						placeholder="Search for customer"
+						keydown={() => {}}
+						bind:value={search}
+						isText={true}
+						type="text"
+					/>
+				</div>
+				<ActionBtn click={true} title={'GO'} />
+			</div>
+			<AddCustomer />
+		</div>
+
+		<div class="pt-5" />
+		<!-- {JSON.stringify($businessStore.BusinessId)} -->
+		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
+	{/if}
+{/if}
+

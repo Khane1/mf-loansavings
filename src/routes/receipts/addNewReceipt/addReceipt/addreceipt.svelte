@@ -38,7 +38,7 @@
 	action={() => {
 		if (newBalance >= 0) {
 			createReceipt(
-				$businessStore.BusinessId,
+				$businessStore,
 				{
 					borrowerId: customerId,
 					borrower: loanData.borrower,

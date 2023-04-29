@@ -87,6 +87,13 @@
 			title="Time_left"
 			data={JSON.stringify(dateDiffInDays(new Date(), loanData.loan_due.toDate())) + ' days'}
 		/>
+		<span
+			class={dateDiffInDays(new Date(), loanData.loan_due.toDate()) < 5 && loanData.balance > 0
+				? 'text-red-500 text-xs underline'
+				: 'hidden'}
+		>
+			Deadline expiry
+		</span>
 		<Detaildata title="Security" data={loanData.collateral} />
 		<div class="mt-6 space-x-20 flex">
 			<!-- <div class=" mt-2 text-sm">Profit</div> -->

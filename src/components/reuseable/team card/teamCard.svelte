@@ -26,13 +26,13 @@
 				</div>
 			{:else}
 				<div class="ml-10 xpt-3 px-2 rounded-lg text-sm">
-					<select id="cars" name="cars" class="text-black">
+					<!-- <select id="cars" name="cars" class="text-black">
 						{#each Object.keys(roles) as role}
 						<option value={role}>{role}</option>
 						{/each}
-					</select>
+					</select> -->
 					<div>
-						<span class="text-sm" on:keypress on:click={()=>click()}>See details</span>
+						<span class="text-sm border px-2 py-1 rounded" on:keypress on:click={()=>click()}>See details</span>
 					</div>
 				</div>
 			{/if}

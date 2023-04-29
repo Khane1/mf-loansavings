@@ -18,8 +18,8 @@
 		<PageTitle title="Team 💪" />
 	</div>
 	<div class="flex justify-center ">
-		<div class="bg-slate-100">
-			<h3>You can change your team roles here.</h3>
+		<div class="bg-slate-100 px-2">
+			<h3 class="text-sm"> Press see details to view member details.</h3>
 		</div>
 	</div>
 	<div class="flex justify-center mt-3"><AddTeamate /></div>

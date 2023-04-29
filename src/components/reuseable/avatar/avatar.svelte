@@ -3,7 +3,7 @@
 	import { cliq_notify } from '../notificationsToast/onNotify';
 
 	let fileinput;
-	export let src, upload, avatar;
+	export let src, upload=false, avatar;
 
 	const onFileSelected = (e) => {
 		let image = e.target.files[0];
@@ -18,7 +18,7 @@
 	function changePage() {}
 </script>
 
-{#if src != 'undefined' && src?.length > 0 && (upload != 'undefined' || upload == false)}
+{#if src != 'undefined' && src?.length > 0 && (upload != 'undefined' && upload == false)}
 	<img
 		on:keypress
 		style="object-fit:cover"
@@ -28,7 +28,7 @@
 		{src}
 		alt="Bordered avatar"
 	/>
-{:else if src == undefined || src?.length == 0}
+{:else if upload == false && (src == undefined || src?.length == 0)}
 	<div>
 		<div class="flex justify-center">
 			<img

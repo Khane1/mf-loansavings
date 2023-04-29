@@ -20,7 +20,7 @@
 
 		<div class="flex justify-between py-4">
 			<span class="font-semibold">Business Name</span>
-			<span class="text-sm">{$businessStore.name}</span>
+			<span class="text-sm">{$businessStore?.name}</span>
 		</div>
 		<hr />
 		<div>

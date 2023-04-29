@@ -52,7 +52,7 @@
 				if ($userAuthStore.name == undefined && $authstatusStore.code == 'authorized') {
 					userAuthStore.update((e) => JSON.parse($userAuthStore));
 				}
-				refresh($businessStore.BusinessId);
+				refresh($userAuthStore.businessId);
 			}
 		}
 	});
@@ -89,6 +89,19 @@
 		<OpeningScreen />
 	{/if}
 {:else}
-	<SmallScreen />
+	{#if loggedIn}
+		{#if onlineStatus}
+		<Sidebar />
+		<div class=" pt-10">
+			<Routes />
+		</div>
+		{/if}
+	{:else if $authstatusStore.code != undefined && loggedIn == false}
+		<OpeningScreen />
+	{:else}
+		Please wait ...
+	{/if}
+
+	<!-- <SmallScreen /> -->
 {/if}
 <Toast />

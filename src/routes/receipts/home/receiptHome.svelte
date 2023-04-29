@@ -11,6 +11,7 @@
 		getReceipts,
 		getReceiptsByDate
 	} from '../../../functions/funcs/firebase/userFuncs/fb_receipts';
+	import SearchSortModal from '../../../components/reuseable/search/SearchSortModal.svelte';
 	export let addReceipt, loanDetail, loanData;
 	$: list =
 		$receiptStore.value != undefined
@@ -27,14 +28,24 @@
 					});
 	$: search = '';
 	let searchBy = 'name';
-	let fromDate, toDate;
+	let fromDate='', toDate='';
 	let searchedState = false;
 	$: total = receipts.reduce((a, { data }) => a + data.amount, 0);
 </script>
 
 <div class="flex justify-between">
-	<div class="flex text-sm">
-		<SearchBy bind:searchBy />
+	<div class="flex text-sm pb-5">
+		<!-- <LoanSortModal/> -->
+		<SearchSortModal
+		title={'Receipt Search by Date'}
+			bind:fromDate
+			bind:toDate
+			submit={() => {
+				searchedState = true;
+				getReceiptsByDate($businessStore.BusinessId, fromDate, toDate);
+			}}
+		/>
+
 		<span class="mx-2">
 			{search}, {fromDate} to {toDate}
 		</span>
@@ -62,7 +73,7 @@
 			/>
 		{:else if searchedState == true}
 			<ActionBtn
-				title={'Clear Search results'}
+				title={'Reset to Today\'s results'}
 				click={() => {
 					searchedState = false;
 					fromDate = '';

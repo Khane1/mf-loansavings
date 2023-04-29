@@ -99,9 +99,8 @@
 	{:else if $authstatusStore.code != undefined && loggedIn == false}
 		<OpeningScreen />
 	{:else}
-		Please wait ...
+		<SmallScreen />
 	{/if}
 
-	<!-- <SmallScreen /> -->
 {/if}
 <Toast />

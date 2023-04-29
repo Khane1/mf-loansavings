@@ -28,9 +28,9 @@
 		</div>
 	</div>
 	<div class="flex justify-center ">
-		<div class="mt-20">
+		<div class={$screenSizeStore.size<768?"mt-5":"mt-20"}>
 			<!-- <Header title="Sign In" /> -->
-			<div class="cardBody space-y-5 border rounded-lg px-5 pt-5 pb-5 shadow">
+			<div class="cardBody space-y-5  rounded-lg px-5 pt-5 pb-5 {$screenSizeStore.size<768?'':" border shadow"}">
 				<div class="flex justify-between">
 					<span
 						on:keypress

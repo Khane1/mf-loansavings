@@ -96,7 +96,7 @@
 			<Routes />
 		</div>
 		{/if}
-	{:else if $authstatusStore.code != undefined && loggedIn == false}
+	{:else if $authstatusStore.code != 'authorized' && loggedIn == false}
 		<OpeningScreen />
 	{:else}
 		<SmallScreen />

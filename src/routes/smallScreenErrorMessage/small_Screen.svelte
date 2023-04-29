@@ -1,6 +1,6 @@
 <div class="text-xl font-bold px-20 py-40 ">
-    We are working on <break> the smaller screen versions </break>
-    <div class="text-sm font-medium pt-5 ">Please use a computer</div>
+    We are loading <break> your business data. </break>
+    <div class="text-sm font-medium pt-5 ">Please wait...</div>
 </div>
 <h1
     style="position: fixed;bottom: 30px;"

@@ -12,9 +12,12 @@
 	export let newLoan;
 	let giveLoan = false;
 
-	$: customers = $customersStore.value.filter((customer) => {
-		return customer.data.name.toLowerCase().includes(search.toLowerCase());
-	});
+	$: customers =
+		$customersStore != undefined && $customersStore.value != undefined
+			? $customersStore.value.filter((customer) => {
+					return customer.data.name.toLowerCase().includes(search.toLowerCase());
+			  })
+			: [];
 	$: search = '';
 	$: capital = $businessStore.capital;
 </script>

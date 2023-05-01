@@ -14,21 +14,22 @@
 	import SearchSortModal from '../../../components/reuseable/search/SearchSortModal.svelte';
 	export let addReceipt, loanDetail, loanData;
 	$: list =
-		$receiptStore.value != undefined
+		$receiptStore != undefined && $receiptStore.value != undefined
 			? $receiptStore.value.sort((a, b) => b.data.last_paid - a.data.last_paid)
 			: [];
 
 	$: receipts =
-		$receiptStore.value == undefined
-			? []
-			: $receiptStore.value
+		$receiptStore != undefined && $receiptStore.value != undefined
+			? $receiptStore.value
 					.sort((a, b) => b.data.last_paid - a.data.last_paid)
 					.filter((loan) => {
 						return loan.data.borrower.toLowerCase().includes(search.toLowerCase());
-					});
+					})
+			: [];
 	$: search = '';
 	let searchBy = 'name';
-	let fromDate='', toDate='';
+	let fromDate = '',
+		toDate = '';
 	let searchedState = false;
 	$: total = receipts.reduce((a, { data }) => a + data.amount, 0);
 </script>
@@ -37,7 +38,7 @@
 	<div class="flex text-sm pb-5">
 		<!-- <LoanSortModal/> -->
 		<SearchSortModal
-		title={'Receipt Search by Date'}
+			title={'Receipt Search by Date'}
 			bind:fromDate
 			bind:toDate
 			submit={() => {
@@ -73,7 +74,7 @@
 			/>
 		{:else if searchedState == true}
 			<ActionBtn
-				title={'Reset to Today\'s results'}
+				title={"Reset to Today's results"}
 				click={() => {
 					searchedState = false;
 					fromDate = '';
@@ -93,7 +94,7 @@
 <div>
 	<Table headers={['', 'PaymentID', 'Borrower', 'Paid', 'Balance', 'Days left', 'Last paid']}>
 		<div class="hover:text-lg my-3" />
-		{#if $receiptStore.value != undefined}
+		{#if receipts.length>0}
 			{#each receipts as receipt, i}
 				<div class="mt-3" />
 				<tr

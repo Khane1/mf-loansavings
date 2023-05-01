@@ -5,7 +5,7 @@
 	import { reportStore, screenSizeStore } from '../../../functions/funcs/stores';
 </script>
 
-{#if $reportStore.value != undefined}
+{#if $reportStore != undefined && $reportStore.value != undefined}
 	{#each $reportStore.value as val}
 		<div class="">
 			<div class="flex justify-center pb-10">
@@ -29,11 +29,11 @@
 					</div>
 				</div>
 			</div>
-			<div class={"flex justify-center pb-5"}>
+			<div class={'flex justify-center pb-5'}>
 				<h1 class="text-xl  text-slate-800">Expense/Capital Table</h1>
 			</div>
-			<div class={$screenSizeStore.size > 768?"flex justify-center":''}>
-				<div class={$screenSizeStore.size > 768 ?"w-1/2 pb-10 ":' pb-10'}>
+			<div class={$screenSizeStore.size > 768 ? 'flex justify-center' : ''}>
+				<div class={$screenSizeStore.size > 768 ? 'w-1/2 pb-10 ' : ' pb-10'}>
 					<Table headers={['Item', 'Amount', 'Type']}>
 						{#each val.data.expenseList as exL}
 							<div class="mt-3" />

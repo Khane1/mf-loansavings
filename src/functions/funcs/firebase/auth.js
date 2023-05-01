@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { authstatusStore, businessStore, userAuthStore } from "../stores";
+import { authstatusStore, businessStore, customersStore, loanStore, receiptStore, reportStore, teamStore, userAuthStore } from "../stores";
 import { app, auth } from "./firebase_init";
 import { getBusiness } from "./userFuncs/fb_business";
 import { getUser } from "./userFuncs/fb_user";
@@ -25,6 +25,13 @@ export async function signOut() {
         await auth.signOut();
         userAuthStore.update((e) => { return; })
         businessStore.update((e) => { return; })
+        authstatusStore.update((e) => { return; })
+        customersStore.update((e) => { return; })
+        loanStore.update((e) => { return; })
+        reportStore.update((e) => { return; })
+        receiptStore.update((e) => { return; })
+        teamStore.update((e) => { return; })
+
         authstatusStore.update((e) => { return { status: 200, code: 'signedout' } })
         cliq_notify('d', 'SignedOut')
     } catch (error) {

@@ -21,7 +21,7 @@
 	}
 	onMount((e) => {});
 	$: list =
-		$customersStore.value != undefined
+		$customersStore != undefined && $customersStore.value != undefined
 			? $customersStore.value.sort((a, b) => b.data.name - a.data.name)
 			: [];
 
@@ -30,13 +30,12 @@
 </script>
 
 {#if $screenSizeStore.size < 1000}
-<div class="flex justify-between">
-
-	<div class="mb-5 pl-2">
-		<PageTitle title='Customers'/>
-	</div>
+	<div class="flex justify-between">
+		<div class="mb-5 pl-2">
+			<PageTitle title="Customers" />
+		</div>
 		<AddCustomer />
-</div>
+	</div>
 	<div>
 		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
 	</div>
@@ -68,4 +67,3 @@
 		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
 	{/if}
 {/if}
-

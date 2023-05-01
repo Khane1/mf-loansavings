@@ -33,7 +33,7 @@
 			return item.type.includes(type);
 		});
 	$: loanlist =
-		$loanStore.value != undefined
+		$loanStore != undefined && $loanStore.value != undefined
 			? $loanStore.value.sort((a, b) => b.data.loan_date_iss - a.data.loan_date_iss)
 			: [];
 
@@ -41,7 +41,7 @@
 		return timestampToDateTime(e.data.loan_date_iss) == new Date().toDateString();
 	});
 	$: receiptlist =
-		$receiptStore.value != undefined
+		$receiptStore != undefined && $receiptStore.value != undefined
 			? $receiptStore.value.sort((a, b) => b.data.last_paid - a.data.last_paid)
 			: [];
 	$: cashIn = receiptlist.filter((e) => {
@@ -50,7 +50,7 @@
 	$: completeLoans = cashIn.filter((e) => {
 		return e.data.balance == 0;
 	}).length;
-	let savedReport =$reportStore.value!=undefined;
+	let savedReport = $reportStore != undefined && $reportStore.value != undefined;
 </script>
 
 <span class="text-sm"> Capital/Expenditure </span>
@@ -61,7 +61,13 @@
 		on:keypress
 		on:click={() => {
 			savedReport = !savedReport;
-		}}> {savedReport ? $reportStore.value!=undefined?'Update today\'s ':'Create Today\'s ' : 'Switch To saved'} Report</span
+		}}
+	>
+		{savedReport
+			? $reportStore != undefined && $reportStore.value != undefined
+				? "Update today's "
+				: "Create Today's "
+			: 'Switch To saved'} Report</span
 	>
 </div>
 {#if !savedReport}
@@ -170,10 +176,15 @@
 						</div>
 					</div>
 					<ActionBtn
-						title= { $reportStore.value!=undefined?'Update Report ':'Save Report'}
+						title={$reportStore != undefined && $reportStore.value != undefined
+							? 'Update Report '
+							: 'Save Report'}
 						click={() => {
-							createReport($businessStore,$reportStore.value, {
-								cashIn: loanlist.reduce((a, { data }) => a + ((data.toBePaid + data.Opening_Fee) - data.balance), 0),
+							createReport($businessStore, $reportStore.value, {
+								cashIn: loanlist.reduce(
+									(a, { data }) => a + (data.toBePaid + data.Opening_Fee - data.balance),
+									0
+								),
 								no_Clientspaid: cashIn.length,
 								cashOut: cashOut.reduce((a, { data }) => a + data.Loan, 0),
 								closingBalance: $businessStore.capital + exp('Capital') - exp('Expenditure'),
@@ -189,12 +200,12 @@
 				</div>
 			{/if}
 			<div>
-				cashIn:{ loanlist.reduce((a, { data }) => a + ((data.toBePaid + data.Opening_Fee) - data.balance), 0)},
-				cashOut:{ cashOut.reduce((a, { data }) => a + data.Loan, 0)},
-				capitalAdded: {exp('Capital')},
-				expenseTotal: {exp('Expenditure')},
-				clearedLoans: {completeLoans},
-
+				cashIn:{loanlist.reduce(
+					(a, { data }) => a + (data.toBePaid + data.Opening_Fee - data.balance),
+					0
+				)}, cashOut:{cashOut.reduce((a, { data }) => a + data.Loan, 0)}, capitalAdded: {exp(
+					'Capital'
+				)}, expenseTotal: {exp('Expenditure')}, clearedLoans: {completeLoans},
 			</div>
 			<Table headers={['Item', 'Amount', 'Date', 'Type', '']}>
 				{#each List as data, id}

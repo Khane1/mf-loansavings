@@ -143,7 +143,7 @@
 			<div class="space-y-3">
 				<div>
 					<GlTitle title={'Customer Name'} />
-					James L
+					{data.name}
 				</div>
 				<div>
 					<GlTitle title={'Loan Issued'} />

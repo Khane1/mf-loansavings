@@ -7,7 +7,7 @@
 </script>
 
 <div class="py-5">
-	{#if $loanStore.value != undefined}
+	{#if $loanStore != undefined && $loanStore.value != undefined}
 		{#each $loanStore.value as loan, index}
 			{#if loan.data.balance > 0}
 				<LoanUserCard

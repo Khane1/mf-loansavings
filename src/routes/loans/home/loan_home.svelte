@@ -19,7 +19,7 @@
 	export let newLoan, isDetail, loanData;
 	let amount = 0;
 	$: list =
-		$loanStore.value != undefined
+		$loanStore != undefined && $loanStore.value != undefined
 			? $loanStore.value.sort((a, b) => b.data.loan_date_iss - a.data.loan_date_iss)
 			: [];
 	$: customer = list.filter((loan) => {
@@ -34,7 +34,10 @@
 		console.log(loan.data.balance);
 		return loan.data.balance > 0;
 	});
-	$: cashIn = list.reduce((a, { data }) => a + ((data.toBePaid + data.Opening_Fee) - data.balance), 0);
+	$: cashIn = list.reduce(
+		(a, { data }) => a + (data.toBePaid + data.Opening_Fee - data.balance),
+		0
+	);
 	$: loansGiven = inComplete.reduce((a, { data }) => a + data.Loan, 0);
 	let stats = false;
 	$: capital = $businessStore.capital;
@@ -91,11 +94,11 @@
 		</div>
 		<div class="pt-5" />
 		<div>
-			{#if $loanStore.value != undefined}
-				{#if capital != 0}
-					<Table
-						headers={['', 'Borrower', 'Loan', 'interest%', 'To be paid', 'Profit', 'Paid', 'Date']}
-					>
+			<Table
+				headers={['', 'Borrower', 'Loan', 'interest%', 'To be paid', 'Profit', 'Paid', 'Date']}
+			>
+				{#if list.length > 0}
+					{#if capital != 0}
 						<!-- {#each  $historyDataStore as item} -->
 						<div class="hover:text-lg my-3" />
 						{#each customer as loan, i}
@@ -114,11 +117,11 @@
 						{/each}
 
 						<!-- {/each} -->
-					</Table>
+					{/if}
 				{/if}
-				{#if capital == 0 && customer.length != 0}
-					<Capital />
-				{/if}
+			</Table>
+			{#if capital == 0}
+				<Capital />
 			{/if}
 		</div>
 	{/if}

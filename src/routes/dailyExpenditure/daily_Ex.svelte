@@ -17,20 +17,26 @@
 	import { json } from '@sveltejs/kit';
 	import CtmrDtl from '../../components/reuseable/customer/ctmrDtl.svelte';
 	import Report from './fullReport/report.svelte';
-	let List = [];
+	$: reportStoreList =
+		$reportStore != undefined && $reportStore.value != undefined
+			? $reportStore.value[0].data.expenseList
+			: [];
+	$: List = reportStoreList;
 	let item = '';
 	let amount;
 	const remove = (data) => {
-		List = List.filter((i) => i !== data);
+		if (sorted(data.item, data.amount).length == 0) {
+			List = List.filter((i) => i !== data);
+		}
 	};
 	let type = '';
 	$: exp = (type) =>
 		List.filter((item) => {
 			return item.type.includes(type);
 		}).reduce((a, { amount }) => a + amount, 0);
-	$: sorted = (type) =>
-		List.filter((item) => {
-			return item.type.includes(type);
+	$: sorted = (itemVal, amount) =>
+		reportStoreList.filter((item) => {
+			return item.item.includes(itemVal) && item.amount.toString().includes(amount);
 		});
 	$: loanlist =
 		$loanStore != undefined && $loanStore.value != undefined
@@ -51,6 +57,9 @@
 		return e.data.balance == 0;
 	}).length;
 	let savedReport = $reportStore != undefined && $reportStore.value != undefined;
+	$: areEqual = (array1, array2) => {
+		return JSON.stringify(array1) === JSON.stringify(array2);
+	};
 </script>
 
 <span class="text-sm"> Capital/Expenditure </span>
@@ -175,28 +184,29 @@
 							Capital:+{exp('Capital')}
 						</div>
 					</div>
-					<ActionBtn
-						title={$reportStore != undefined && $reportStore.value != undefined
-							? 'Update Report '
-							: 'Save Report'}
-						click={() => {
-							createReport($businessStore, $reportStore.value, {
-								cashIn: loanlist.reduce(
-									(a, { data }) => a + (data.toBePaid + data.Opening_Fee - data.balance),
-									0
-								),
-								no_Clientspaid: cashIn.length,
-								cashOut: cashOut.reduce((a, { data }) => a + data.Loan, 0),
-								closingBalance: $businessStore.capital + exp('Capital') - exp('Expenditure'),
-								capitalAdded: exp('Capital'),
-								expenseTotal: exp('Expenditure'),
-								expenseList: List,
-								clearedLoans: completeLoans,
-								date: new Date()
-								//  opening balance,
-							});
-						}}
-					/>
+					{#if !areEqual(List, reportStoreList) || reportStoreList.length == 0}
+						<ActionBtn
+							title={$reportStore != undefined && $reportStore.value != undefined
+								? 'Update Report '
+								: 'Save Report'}
+							click={() => {
+								createReport($businessStore, $reportStore.value, {
+									cashIn: loanlist.reduce(
+										(a, { data }) => a + (data.toBePaid + data.Opening_Fee - data.balance),
+										0
+									),
+									no_Clientspaid: cashIn.length,
+									cashOut: cashOut.reduce((a, { data }) => a + data.Loan, 0),
+									closingBalance: $businessStore.capital + exp('Capital') - exp('Expenditure'),
+									capitalAdded: exp('Capital'),
+									expenseTotal: exp('Expenditure'),
+									expenseList: List,
+									clearedLoans: completeLoans,
+									date: new Date()
+									//  opening balance,
+								});
+							}}
+						/>{/if}
 				</div>
 			{/if}
 			<div>
@@ -209,11 +219,12 @@
 			</div>
 			<Table headers={['Item', 'Amount', 'Date', 'Type', '']}>
 				{#each List as data, id}
-					<div class="mt-3" />
+					<div class="mt-3 " />
 					<tr
-						class="{data.type == 'Capital'
-							? 'cap'
-							: 'exp'} bg-slate-50 space-y-4 hover:text-red-500"
+						class="{(data.type == 'Capital' ? 'cap' : 'exp',
+						sorted(data.item, data.amount).length == 0
+							? 'hover:text-red-500'
+							: '')} bg-slate-50 space-y-4"
 						style="cursor: pointer;"
 						on:keypress
 						on:click={() => remove(data)}
@@ -228,7 +239,9 @@
 							>{new Date().toDateString()}</td
 						>
 						<td class="text-sm font-light px-6 py-2 whitespace-nowrap">{data.type}</td>
-						<td>&times;</td>
+						{#if sorted(data.item, data.amount).length == 0}
+							<td> &times;</td>
+						{/if}
 					</tr>
 				{/each}
 			</Table>

@@ -13,8 +13,10 @@ import { dateTransfer, getDateToday } from '../../../func_essential';
 
 export async function createReport(business, report, data) {
     try {
-        if (report!=undefined&&report[0] != undefined) {
-            alert('update')
+        if (report != undefined && report[0] != undefined) {
+            console.log();
+
+            await updateDoc(reportDoc(business.BusinessId, report[0].data.reportId), data)
         } else {
             let reportId = uuidv4()
             data['reportId'] = reportId;

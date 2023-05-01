@@ -43,7 +43,8 @@ export async function createLoan(business, customerId, data) {
 // }
 
 export async function getLoans(bid) {
-    const conditions = [where('date', '>=', new Date(String(new Date().getMonth()+1).padStart(2, "0") + '-1-' + String(new Date().getFullYear()).padStart(2, "0"))), where('date', '<=', new Date(String(new Date().getMonth()+1).padStart(2, "0") + '-30-' + String(new Date().getFullYear()).padStart(2, "0")))]
+    const conditions=[where('status','==','active')]
+    // const conditions = [where('date', '>=', new Date(String(new Date().getMonth()+1).padStart(2, "0") + '-1-' + String(new Date().getFullYear()).padStart(2, "0"))), where('date', '<=', new Date(String(new Date().getMonth()+1).padStart(2, "0") + '-30-' + String(new Date().getFullYear()).padStart(2, "0")))]
     await customQuerytablelistenerTemplate(query(loanCol(bid), ...conditions), bid, loanStore)
 }
 

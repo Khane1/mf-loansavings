@@ -77,6 +77,7 @@
 		<Detaildata title="Interest" data={calculateInterest(loanData.interest, loanData.Loan) + '%'} />
 		<Detaildata title="Opening_Fee" data={MoneyFormat(loanData.Opening_Fee)} />
 		<Detaildata title="Type" data={loanData.type} />
+		<Detaildata title="status" data={loanData.status} />
 		<Detaildata title="Profit" data={MoneyFormat(loanData.interest)} />
 	</div>
 	<div class="pt-20">

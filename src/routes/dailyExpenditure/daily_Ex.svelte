@@ -45,7 +45,7 @@
 			? $receiptStore.value.sort((a, b) => b.data.last_paid - a.data.last_paid)
 			: [];
 	$: cashIn = receiptlist.filter((e) => {
-		return timestampToDateTime(e.data.last_paid) == new Date('04-26-2023').toDateString();
+		return timestampToDateTime(e.data.last_paid) == new Date().toDateString();
 	});
 	$: completeLoans = cashIn.filter((e) => {
 		return e.data.balance == 0;
@@ -173,7 +173,7 @@
 						title= { $reportStore.value!=undefined?'Update Report ':'Save Report'}
 						click={() => {
 							createReport($businessStore,$reportStore.value, {
-								cashIn: cashIn.reduce((a, { data }) => a + data.amount, 0),
+								cashIn: cashIn.reduce((a, { data }) => a + data.amount, 0) + loanlist.reduce((a, { data }) => a + ((data.toBePaid + data.Opening_Fee) - data.balance), 0),
 								no_Clientspaid: cashIn.length,
 								cashOut: cashOut.reduce((a, { data }) => a + data.Loan, 0),
 								closingBalance: $businessStore.capital + exp('Capital') - exp('Expenditure'),
@@ -189,7 +189,7 @@
 				</div>
 			{/if}
 			<div>
-				cashIn:{ cashIn.reduce((a, { data }) => a + data.amount, 0)},
+				cashIn:{ cashIn.reduce((a, { data }) => a + data.amount, 0) + loanlist.reduce((a, { data }) => a + ((data.toBePaid + data.Opening_Fee) - data.balance), 0)},
 				cashOut:{ cashOut.reduce((a, { data }) => a + data.Loan, 0)},
 				capitalAdded: {exp('Capital')},
 				expenseTotal: {exp('Expenditure')},

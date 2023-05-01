@@ -33,7 +33,7 @@
 	}
     .danger:hover{
 		font-weight: 600;
-		background-color: #3970f1;
+		background-color: #f13948;
 		color: #f1f1f1;
 	}
 </style>

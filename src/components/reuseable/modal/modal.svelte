@@ -66,7 +66,8 @@
 						<ActionBtn
 							title={createTitle}
 							click={() => {
-								action(), toggleModal(), close();
+								action(),
+								 toggleModal(), close();
 							}}
 						/>
 					{/if}

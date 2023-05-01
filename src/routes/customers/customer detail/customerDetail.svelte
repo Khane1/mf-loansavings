@@ -6,7 +6,10 @@
 	import CtmrDtl from '../../../components/reuseable/customer/ctmrDtl.svelte';
 	import PageTitle from '../../../components/reuseable/title/pageTitle.svelte';
 	import { MoneyFormat } from '../../../functions/func_essential';
+	import { deleteCustomer } from '../../../functions/funcs/firebase/userFuncs/fb_customers';
+	import { businessStore } from '../../../functions/funcs/stores';
 	import GiveLoan from '../../loans/issueLoan/giveLoan/giveLoan.svelte';
+	import ConfirmDelete from './confirmDelete.svelte';
 	export let isDetail, userData;
 </script>
 
@@ -15,7 +18,10 @@
 	<div style="cursor:pointer" on:click={() => (isDetail = false)} on:keypress>
 		<PageTitle title={'← Customer Details'} />
 	</div>
-	<div>
+	<div class="flex justify-evenly">
+		{#if userData.status=='inactive'}
+			<ConfirmDelete bind:userData />
+		{/if}
 		<GiveLoan data={userData} />
 	</div>
 </div>
@@ -24,10 +30,7 @@
 	<!-- <div /> -->
 	<div class="border shadow-2xl w-auto  rounded-3xl p-8  ">
 		<div class="flex justify-center  pt-5 ">
-			<Avatar
-				src={userData.userUrl}
-				size={2}
-			/>
+			<Avatar src={userData.userUrl} size={2} />
 		</div>
 		<div class="flex justify-center   pt-1 pb-2">
 			<div class="font-semibold text-slate-600">{userData.name}</div>
@@ -52,10 +55,7 @@
 	</div>
 	<div class=" px-5 pt-10 space-y-1  border shadow-xl rounded-2xl">
 		<div class="flex justify-center">
-			<Avatar
-				src={userData.gua_Url}
-				size={0}
-			/>
+			<Avatar src={userData.gua_Url} size={0} />
 		</div>
 		<div class="flex justify-center text-sm pt-2 text-slate-500">Guarantor</div>
 		<div class="w-48">

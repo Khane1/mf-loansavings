@@ -34,7 +34,7 @@
 		console.log(loan.data.balance);
 		return loan.data.balance > 0;
 	});
-	$: cashIn = list.reduce((a, { data }) => a + (data.toBePaid - data.balance), 0);
+	$: cashIn = list.reduce((a, { data }) => a + ((data.toBePaid + data.Opening_Fee) - data.balance), 0);
 	$: loansGiven = inComplete.reduce((a, { data }) => a + data.Loan, 0);
 	let stats = false;
 	$: capital = $businessStore.capital;

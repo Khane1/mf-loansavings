@@ -16,7 +16,7 @@ import { dateTransfer, getDateToday } from '../../../func_essential';
 export async function createLoan(business, customerId, data) {
     try {
         let loanId = uuidv4()
-        let capital = business.capital - data['Loan'];
+        let capital = (business.capital + data['Opening_Fee']) - data['Loan'];
         console.log(business.BusinessId, loanId, data);
         data['loanId'] = loanId;
         try {

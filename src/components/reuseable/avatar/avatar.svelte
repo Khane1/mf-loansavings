@@ -3,7 +3,9 @@
 	import { cliq_notify } from '../notificationsToast/onNotify';
 
 	let fileinput;
-	export let src, upload=false, avatar;
+	export let src,
+		upload = false,
+		avatar;
 
 	const onFileSelected = (e) => {
 		let image = e.target.files[0];
@@ -17,8 +19,7 @@
 	let formNo = 1;
 	function changePage() {}
 </script>
-
-{#if src != 'undefined' && src?.length > 0 && (upload != 'undefined' && upload == false)}
+{#if (src.length > 0 && upload == true)||(src != 'undefined' && src?.length > 0 && upload != 'undefined' && upload == false) }
 	<img
 		on:keypress
 		style="object-fit:cover"

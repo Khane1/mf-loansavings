@@ -23,7 +23,7 @@
 		<span class="font-bold pb-5 flex justify-center">Account Settings</span>
 		<div>
 			<div class="flex justify-center">
-				<Avatar size="40" src={user.profile??''} bind:avatar/>
+				<Avatar upload={true} size="40" src={user.profile??''} bind:avatar/>
 			</div>
 			<div />
 			<div class="flex justify-between py-4">

@@ -25,6 +25,7 @@
 	import { checkIfSignedIn } from '../functions/funcs/firebase/auth';
 	import Toast from '../components/reuseable/notificationsToast/toast.svelte';
 	import { refresh } from '../functions/funcs/dataStarter';
+	import { businessCapitallistener } from '../functions/funcs/firebase/userFuncs/fb_business';
 	let y;
 	$: loggedIn =
 		typeof window != 'undefined' && $authstatusStore != undefined && $authstatusStore.length != 0

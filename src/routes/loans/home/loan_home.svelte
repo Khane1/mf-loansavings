@@ -27,11 +27,9 @@
 	});
 	$: search = '';
 	$: complete = list.filter((loan) => {
-		console.log(loan.data.balance);
 		return loan.data.balance == 0;
 	});
 	$: inComplete = list.filter((loan) => {
-		console.log(loan.data.balance);
 		return loan.data.balance > 0;
 	});
 	$: cashIn = list.reduce(

@@ -8,7 +8,7 @@
 	import Table from '../../components/reuseable/tables/table.svelte';
 	import HeaderSidebar from '../../components/reuseable/title/headerSidebar.svelte';
 	import PageTitle from '../../components/reuseable/title/pageTitle.svelte';
-	import { businessStore, customersStore, screenSizeStore } from '../../functions/funcs/stores';
+	import { businessStore, capitalStore, customersStore, screenSizeStore } from '../../functions/funcs/stores';
 	import AddCustomer from './addCustomer/addCustomer.svelte';
 	import CustomerDetail from './customer detail/customerDetail.svelte';
 	import { sortCustomers } from '../../functions/func_essential';
@@ -28,17 +28,16 @@
 	$: customers = sortCustomers(list, search);
 	$: search = '';
 </script>
-
 {#if $screenSizeStore.size < 1000}
-	<div class="flex justify-between">
-		<div class="mb-5 pl-2">
-			<PageTitle title="Customers" />
-		</div>
-		<AddCustomer />
+<div class="flex justify-between">
+	<div class="mb-5 pl-2">
+		<PageTitle title="Customers" />
 	</div>
-	<div>
-		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
-	</div>
+	<AddCustomer />
+</div>
+<div>
+	<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
+</div>
 {/if}
 {#if $screenSizeStore.size > 1000}
 	{#if isDetail}

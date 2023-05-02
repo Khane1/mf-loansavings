@@ -1,5 +1,5 @@
 import { checkIfSignedIn } from "./firebase/auth";
-import { getBusiness } from "./firebase/userFuncs/fb_business";
+import { businessCapitallistener, getBusiness } from "./firebase/userFuncs/fb_business";
 import { customerTablelistener } from "./firebase/userFuncs/fb_customers";
 import { getReports } from "./firebase/userFuncs/fb_dailyReport";
 import { getLoans } from "./firebase/userFuncs/fb_loans";
@@ -11,6 +11,7 @@ export function refresh(bid) {
     checkIfSignedIn().then((e) => {
         if (e != null) {
             customerTablelistener(bid);
+            businessCapitallistener(bid)
             getLoans(bid);
             getReceipts(bid);
             getTeam(bid);

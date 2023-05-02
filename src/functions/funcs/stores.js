@@ -9,6 +9,7 @@ export let loadingStateStore = writable([]);
 /////Data model stores.
 export let userAuthStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'userAuth')
 export let businessStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'business')
+export let capitalStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'capital')
 export let authstatusStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'status')
 export let customersStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'customers')
 export let loanStore = persist(writable([]),typeof window!==undefined? createLocalStorage():{}, 'loan')

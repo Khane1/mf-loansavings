@@ -42,7 +42,6 @@ export async function signOut() {
 export async function checkIfSignedIn() {
     return auth.onAuthStateChanged(
         user => {
-            console.log(user);
             if (user == null) {
                 signOut()
                 return false;

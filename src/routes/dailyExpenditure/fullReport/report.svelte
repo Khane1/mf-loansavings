@@ -12,14 +12,6 @@
 				<h1 class="text-xl underline text-slate-800">Today's report</h1>
 			</div>
 			<div class={$screenSizeStore.size < 768 ? '' : ' flex justify-center  pb-20 '}>
-				<div class={$screenSizeStore.size < 768 ? 'flex justify-center' : ''}>
-					<div class="w-72 px-5 shadow-xl">
-						<CtmrDtl title={'Date'} data={timestampToDateTime(val.data.date)} />
-						<CtmrDtl title={'CapitalAdded'} data={MoneyFormat(val.data.capitalAdded)} />
-						<CtmrDtl title={'ExpenseTotal'} data={MoneyFormat(val.data.expenseTotal)} />
-						<CtmrDtl title={'ClosingBalance'} data={MoneyFormat(val.data.closingBalance)} />
-					</div>
-				</div>
 				<div class={$screenSizeStore.size < 768 ? 'flex justify-center py-10' : ''}>
 					<div class=" w-72 px-5 shadow-xl">
 						<CtmrDtl title={'CashOut'} data={MoneyFormat(val.data.cashOut)} />
@@ -28,6 +20,15 @@
 						<CtmrDtl title={'Clients paid'} data={val.data.no_Clientspaid} />
 					</div>
 				</div>
+				<div class={$screenSizeStore.size < 768 ? 'flex justify-center' : ''}>
+					<div class="w-72 px-5 shadow-xl">
+						<CtmrDtl title={'Date'} data={timestampToDateTime(val.data.date)} />
+						<CtmrDtl title={'CapitalAdded'} data={MoneyFormat(val.data.capitalAdded)} />
+						<CtmrDtl title={'ExpenseTotal'} data={MoneyFormat(val.data.expenseTotal)} />
+						<CtmrDtl title={'ClosingBalance'} data={MoneyFormat(val.data.closingBalance)} />
+					</div>
+				</div>
+				
 			</div>
 			<div class={'flex justify-center pb-5'}>
 				<h1 class="text-xl  text-slate-800">Expense/Capital Table</h1>
@@ -54,7 +55,8 @@
 				</div>
 			</div>
 		</div>
-	{/each}{:else if $screenSizeStore.size < 768}
+	{/each}
+	{:else if $screenSizeStore.size < 768}
 	<div class="flex justify-center text-3xl mt-20">
 		<span class="rounded-full bg-gray-400 text-white px-5 py-3 shadow-xl">≠</span>
 	</div>

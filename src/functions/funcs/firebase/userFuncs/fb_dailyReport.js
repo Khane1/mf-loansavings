@@ -14,9 +14,9 @@ import { dateTransfer, getDateToday } from '../../../func_essential';
 export async function createReport(business, report, data) {
     try {
         if (report != undefined && report[0] != undefined) {
-            console.log();
-
             await updateDoc(reportDoc(business.BusinessId, report[0].data.reportId), data)
+            await updateCapital(business.BusinessId, data['closingBalance'])
+            cliq_notify('s', 'Report updated')
         } else {
             let reportId = uuidv4()
             data['reportId'] = reportId;

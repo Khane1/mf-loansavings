@@ -1,5 +1,5 @@
 import {
-    setDoc, doc, updateDoc, where, query, collection, or
+    setDoc, doc, updateDoc, where, query, collection, or, onSnapshot
 } from 'firebase/firestore';
 import { uuidv4 } from '@firebase/util';
 import { fb_db } from '../firebase_init';
@@ -43,9 +43,52 @@ export async function createLoan(business, customerId, data) {
 // }
 
 export async function getLoans(bid) {
-    const conditions=[where('status','==','active')]
-    // const conditions = [where('date', '>=', new Date(String(new Date().getMonth()+1).padStart(2, "0") + '-1-' + String(new Date().getFullYear()).padStart(2, "0"))), where('date', '<=', new Date(String(new Date().getMonth()+1).padStart(2, "0") + '-30-' + String(new Date().getFullYear()).padStart(2, "0")))]
-    await customQuerytablelistenerTemplate(query(loanCol(bid), ...conditions), bid, loanStore)
+    const conditions = [where('status', '==', 'active'),]
+    const condition2 = [where('status', '==', 'complete'),where('lastpaid', '>=', new Date(getDateToday().today)),]
+
+    // await customQuerytablelistenerTemplate(query(loanCol(bid), ...conditions,), bid, loanStore)
+    onSnapshot(query(loanCol(bid), ...conditions), async (activeRes) => {
+        let list = [];
+        
+        if (activeRes.docs.length != 0) {
+            activeRes.docs.forEach((val) => {
+                if (list.filter(e => e.customerId === val.id).length == 0) {
+                    list = [...list, { data: val.data(), customer_id: val.id }]
+                } else {
+                    
+                }
+            })
+        }
+        onSnapshot(query(loanCol(bid), ...condition2), async (lastpaidRes) => {
+            if (lastpaidRes.docs.length != 0) {
+                lastpaidRes.docs.forEach((val) => {
+                    if (list.filter(e => e.customerId === val.id).length == 0) {
+                        list = [...list, { data: val.data(), customer_id: val.id }]
+                    } else {
+
+                    }
+                })
+            }
+            loanStore.update((e) => {
+                return { value: list, businessId: bid };
+            })
+            });
+    })
+    //    async (fb) => {
+    //         let list = [];
+    //         if (fb.docs.length != 0) {
+    //             fb.docs.forEach((val) => {
+    //                 if (list.filter(e => e.customerId === val.id).length == 0) {
+    //                     list = [...list, { data: val.data(), customer_id: val.id }]
+    //                 } else {
+
+    //                 }
+    //             })
+    //             loanStore.update((e) => {
+    //                 return { value: list, businessId: bid };
+    //             });
+    //         } else cliq_notify('w', 'No results found')
+    //     })
 }
 
 export async function getLoansByDate(bid, from, to) {

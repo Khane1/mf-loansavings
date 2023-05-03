@@ -33,7 +33,11 @@
 		return loan.data.balance > 0;
 	});
 	$: cashIn = list.reduce(
-		(a, { data }) => a + (data.toBePaid + data.Opening_Fee - data.balance),
+		(a, { data }) =>
+			a +
+			(data.newLoan == true || data.newLoan == undefined
+				? data.toBePaid + data.Opening_Fee - data.balance
+				: data.toBePaid - data.balance),
 		0
 	);
 	$: loansGiven = inComplete.reduce((a, { data }) => a + data.Loan, 0);
@@ -91,6 +95,10 @@
 			<ActionBtn click={() => (newLoan = true)} title={'Issue new loan ✜'} />
 		</div>
 		<div class="pt-5" />
+		{#if (searchedState = false)}
+			<div class="text-xs">These are the last 10 records for this month</div>
+		{/if}
+
 		<div>
 			<Table
 				headers={['', 'Borrower', 'Loan', 'interest%', 'To be paid', 'Profit', 'Paid', 'Date']}
@@ -98,20 +106,42 @@
 				{#if list.length > 0}
 					{#if capital != 0}
 						<!-- {#each  $historyDataStore as item} -->
-						<div class="hover:text-lg my-3" />
 						{#each customer as loan, i}
-							<div class="mt-2" />
-							<tr
-								style="cursor: pointer;"
-								on:click={() => ((isDetail = true), (loanData = loan.data))}
-								class={loan.data.status != 'undefined' && loan.data.status != 'complete'
-									? dateDiffInDays(new Date(), loan.data.loan_due.toDate()) < 5
-										? 'bg-red-100 space-y-4'
-										: 'bg-slate-50 space-y-4'
-									: 'bg-green-100 space-y-4'}
-							>
-								<LoanRow loan={loan.data} index={i} />
-							</tr>
+							<div class="hover:text-lg my-3" />
+							{#if loan.data.status == 'active'}
+								<div class="mt-2" />
+								<tr
+									style="cursor: pointer;"
+									on:click={() => ((isDetail = true), (loanData = loan.data))}
+									class={loan.data.status != 'undefined' && loan.data.status != 'complete'
+										? dateDiffInDays(new Date(), loan.data.loan_due.toDate()) < 5
+											? 'bg-red-100 space-y-4'
+											: 'bg-slate-50 space-y-4'
+										: 'bg-green-100 space-y-4'}
+								>
+									<LoanRow loan={loan.data} index={i} />
+								</tr>
+							{/if}
+						{/each}
+						<div class="hover:text-lg my-3">
+							<span class="underline" style="font-size: x-small;">Complete</span>
+						</div>
+
+						{#each customer as loan, i}
+							{#if loan.data.status != 'active'}
+								<div class="mt-2" />
+								<tr
+									style="cursor: pointer;"
+									on:click={() => ((isDetail = true), (loanData = loan.data))}
+									class={loan.data.status != 'undefined' && loan.data.status != 'complete'
+										? dateDiffInDays(new Date(), loan.data.loan_due.toDate()) < 5
+											? 'bg-red-100 space-y-4'
+											: 'bg-slate-50 space-y-4'
+										: 'bg-green-100 space-y-4'}
+								>
+									<LoanRow loan={loan.data} index={i} />
+								</tr>
+							{/if}
 						{/each}
 
 						<!-- {/each} -->

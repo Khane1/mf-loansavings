@@ -2,7 +2,15 @@
 	import ActionBtn from '../../../components/reuseable/buttons/actionBtn.svelte';
 
 	let showModal = false;
-	export let nextButton, nextFunc, modalTitle, title, close, createTitle, action;
+	export let nextButton,
+		nextFunc,
+		modalTitle,
+		title,
+		close,
+		createTitle,
+		action,
+		backfunc,
+		backButton;
 	function toggleModal() {
 		showModal = !showModal;
 	}
@@ -53,21 +61,31 @@
 					>
 						Close
 					</button>
-					{#if nextButton == true}
-						<ActionBtn title="Next" click={nextFunc} />
-					{:else}
+					{#if backButton == true}
 						<button
-							class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+							class="text-blue-600 hover:border background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
 							type="button"
-							on:click={nextFunc}
+							on:click={() => {
+								backfunc();
+							}}
 						>
 							Back
+						</button>{/if}
+					{#if nextButton == true}
+						<button
+							class="text-blue-600 hover:border background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+							type="button"
+							on:click={() => {
+								nextFunc();
+							}}
+						>
+							Next
 						</button>
+					{:else}
 						<ActionBtn
 							title={createTitle}
 							click={() => {
-								action(),
-								 toggleModal(), close();
+								action(), toggleModal(), close();
 							}}
 						/>
 					{/if}

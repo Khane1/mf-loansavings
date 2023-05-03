@@ -96,9 +96,11 @@
 			Deadline expiry
 		</span>
 		<Detaildata title="Security" data={loanData.collateral} />
+		<Detaildata title="Created_On" data={timestampToDateTime(loanData.date)} />
+
 		<div class="mt-6 space-x-20 flex">
 			<!-- <div class=" mt-2 text-sm">Profit</div> -->
-			<ActionBtn title={'See Transaction History ❒'} />
+			<!-- <ActionBtn title={'See Transaction History ❒'} /> -->
 		</div>
 	</div>
 </div>

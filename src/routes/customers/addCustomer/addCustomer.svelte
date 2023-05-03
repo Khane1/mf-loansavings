@@ -11,6 +11,7 @@
 	import Step2 from './steps/step2.svelte';
 	import Step3 from './steps/step3.svelte';
 	import Step4 from './steps/step4.svelte';
+	import { cliq_notify } from '../../../components/reuseable/notificationsToast/onNotify';
 	let formNo = 1;
 	let name,
 		date = new Date(),
@@ -30,10 +31,15 @@
 		guarantor_phoneNumber,
 		avatar,
 		fieldAgent;
-	function changePage() {
-		formNo++;
+	function changePage(next) {
+		if (!next) {
+			formNo--;
+		} else {
+			formNo++;
+		}
 		formNo = formNo <= 4 ? formNo : 1;
 	}
+
 	onMount((e) => {
 		formNo = 1;
 	});
@@ -41,10 +47,14 @@
 
 <Modal
 	createTitle={'Save Customer'}
+	backfunc={() => {
+		formNo != 1 ? changePage(false) : cliq_notify('w', 'This is the first page!');
+	}}
 	title={'Add Customer ✜'}
 	modalTitle={formNo < 3 ? 'Customer  info ' + formNo : 'Guarantor info ' + formNo}
 	nextButton={formNo < 4}
-	nextFunc={() => changePage()}
+	backButton={formNo != 1}
+	nextFunc={() => changePage(true)}
 	close={() => (formNo = 1)}
 	action={() => {
 		createCustomer(

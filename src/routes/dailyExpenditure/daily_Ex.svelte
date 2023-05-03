@@ -58,7 +58,9 @@
 		);
 	});
 	$: cashIn = loansToday.reduce(
-		(a, { data }) => a + (data.toBePaid + data.Opening_Fee - data.balance),
+		(a, { data }) => a + (data.newLoan==true || data.newLoan == undefined
+				? data.toBePaid + data.Opening_Fee - data.balance
+				: data.toBePaid - data.balance),
 		0
 	);
 	$: completeLoans = loansToday.filter((e) => {

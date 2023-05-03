@@ -9,8 +9,12 @@
 	import { businessStore, customersStore } from '../../../../functions/funcs/stores';
 	import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 	$: formNo = 1;
-	function changePage() {
-		formNo++;
+	function changePage(next) {
+		if (!next) {
+			formNo--;
+		} else {
+			formNo++;
+		}
 		formNo = formNo <= 4 ? formNo : 1;
 	}
 	let amount = 0;
@@ -20,7 +24,7 @@
 	$: interest = (amount * percentage) / 100;
 	$: toBePaid = parseInt(interest) + parseInt(amount);
 	$: newBalance = loanData.balance - amount;
-	export let loanData,customerId;
+	export let loanData, customerId;
 	$: userData = $customersStore.value.filter((e) =>
 		e.customer_id.toLowerCase().includes(loanData.customerId)
 	);
@@ -29,11 +33,15 @@
 <!-- Borrower	Amount	Agent	Balance	Days left	Last paid -->
 
 <Modal
+	backfunc={() => {
+		formNo != 1 ? changePage(false) : cliq_notify('w', 'This is the first page!');
+	}}
+	backButton={formNo != 1}
 	createTitle={'Save receipt'}
 	title={'Add receipt ✜'}
 	modalTitle={'New Receipt pg.' + formNo}
 	nextButton={formNo < 2}
-	nextFunc={() => changePage()}
+	nextFunc={() => changePage(true)}
 	close={() => (formNo = 1)}
 	action={() => {
 		if (newBalance >= 0) {
@@ -51,8 +59,8 @@
 				loanData,
 				userData
 			);
-		}else{
-			cliq_notify('d','You can\'t deposit more than the required amount. ')
+		} else {
+			cliq_notify('d', "You can't deposit more than the required amount. ");
 		}
 	}}
 >
@@ -66,9 +74,14 @@
 			<div>
 				<GlTitle title={'How much is the customer paying?'} />
 				<span class="text-xs text-red-600">
-					{newBalance<0?"You can\'t deposit more than the required amount":''}
-				</span>	 
-				<AddCstmr type="number" label="Balance {MoneyFormat(loanData.balance)}" isText={false} bind:value={amount} />
+					{newBalance < 0 ? "You can't deposit more than the required amount" : ''}
+				</span>
+				<AddCstmr
+					type="number"
+					label="Balance {MoneyFormat(loanData.balance)}"
+					isText={false}
+					bind:value={amount}
+				/>
 			</div>
 		{:else}
 			<div class="space-y-3">

@@ -5,6 +5,7 @@
 	import GlTitle from '../../../../components/reuseable/loan/giveLoan/gl_title.svelte';
 	import Modal from '../../../../components/reuseable/modal/modal.svelte';
 	import {
+		convertCustomDate4InputMin,
 		convertDate4InputMin,
 		dateDiffInDays,
 		getDateToday,
@@ -13,38 +14,57 @@
 	import { createLoan } from '../../../../functions/funcs/firebase/userFuncs/fb_loans';
 	import { businessStore } from '../../../../functions/funcs/stores';
 	import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
+	import ActionBtn from '../../../../components/reuseable/buttons/actionBtn.svelte';
+	import PageTitle from '../../../../components/reuseable/title/pageTitle.svelte';
 	$: formNo = 1;
-	function changePage() {
-		formNo++;
-		formNo = formNo <= 4 ? formNo : 1;
+	function changePage(next) {
+		if (!next) {
+			formNo--;
+		} else {
+			formNo++;
+		}
+		formNo = formNo <= 5 ? formNo : 1;
 	}
 	let amount = 0;
 	let percentage = 0;
 	let collateral = '';
 	let openingFee = 0;
-	let loan_due = '';
-	let loan_date_iss = new Date();
-	$: loan_term = dateDiffInDays(loan_date_iss, new Date(loan_due));
+	let isNewLoan; //false; old loan
+	let loan_due,
+		loan_start = new Date();
+	let loan_date_iss = isNewLoan ? new Date() : loan_start;
+	$: loan_term = isNewLoan
+		? dateDiffInDays(loan_date_iss, new Date(loan_due))
+		: dateDiffInDays(new Date(loan_start), new Date(loan_due));
 	let attributes = {
 		min: convertDate4InputMin()
 	};
+
 	$: interest = (amount * percentage) / 100;
 	$: toBePaid = parseInt(interest) + parseInt(amount);
 	$: capital = $businessStore.capital;
 	export let data;
 	export let c_id;
+	$: isComplete = false;
+	let balance = 0;
 </script>
 
 <Modal
 	createTitle={'Save loan data'}
+	backfunc={() => {
+		formNo != 1 ? changePage(false) : cliq_notify('w', 'This is the first page!');
+	}}
 	title={'Give Loan ✜'}
-	modalTitle={'Give Loan ' + formNo}
-	nextButton={formNo < 4}
-	nextFunc={() => changePage()}
+	modalTitle={'Give Loan '}
+	nextButton={formNo < 5}
+	backButton={formNo != 1}
+	nextFunc={() => {
+		formNo != 3 ? changePage(true) : cliq_notify('w', 'Please select an option!');
+	}}
 	close={() => (formNo = 1)}
 	action={() => {
-		if (capital >= amount && amount > 0) {
-			createLoan($businessStore, c_id, {
+		if ((capital >= amount && amount > 0) || !isNewLoan) {
+			createLoan($businessStore, c_id, isNewLoan, {
 				borrower: data.name,
 				customerId: c_id,
 				Loan: amount,
@@ -57,11 +77,12 @@
 				interest,
 				loan_date_iss,
 				loan_due: new Date(loan_due),
-				balance: toBePaid,
+				balance: isNewLoan ? balance : toBePaid,
 				date: new Date(),
-				lastpaid: '',
+				lastpaid: isNewLoan ? '' : isComplete ? new Date(loan_due) : '',
 				userUrl: data.userUrl ?? '',
-				status: 'active'
+				status: isComplete ? 'complete' : 'active',
+				newLoan: isNewLoan
 			});
 		} else {
 			cliq_notify(
@@ -78,7 +99,6 @@
 				<GlTitle title={'Customer Name'} />
 				{data.name}
 			</div>
-
 			<div>
 				<GlTitle title={'How much is the customer borrowing?'} />
 				<AddCstmr type="number" label="Amount" isText={false} bind:value={amount} />
@@ -119,26 +139,94 @@
 				</div>
 			</div>
 		{:else if formNo == 3}
+			<GlTitle title={'Are you creating an old or new Loan?'} />
+
+			<div class="flex justify-center">
+				<ActionBtn
+					title="Old Loan "
+					click={() => {
+						isNewLoan = false;
+						changePage(true);
+					}}
+				/>
+				<ActionBtn
+					title="New Loan "
+					click={() => {
+						isComplete = false;
+						isNewLoan = true;
+						changePage(true);
+					}}
+				/>
+			</div>
+			<div class=" w-72 flex justify-center">
+				<span class="text-xs ">
+					Old loans can have an older date of Issue, while new loans can only have today as the date
+					of Issue.
+				</span>
+			</div>
+			<div class=" w-72 flex justify-center">
+				<span class="text-xs text-red-500">Old loans do not affect your capital.</span>
+			</div>
+		{:else if formNo == 4}
 			<div>
 				<GlTitle title={'Please enter your loan opening fee.'} />
 				<div>
 					<AddCstmr type="number" label="Opening fee" isText={false} bind:value={openingFee} />
 				</div>
 			</div>
-			<div>
-				<GlTitle title={'Date today'} />
-				<div class="">
-					{new Date().toDateString()}
+			{#if isNewLoan == true}
+				<div>
+					<GlTitle title={'Date today'} />
+					<div class="">
+						{new Date().toDateString()}
+					</div>
 				</div>
-			</div>
-			<div>
-				<GlTitle title={'Loan Term'} />
-				<div class="">
-					<!-- {new Date().toDateString()} -->
-					<input type="date" bind:value={loan_due} min={attributes.min} />
-					<!-- <AddCstmr type="number" label="Number of days" isText={false} bind:value={loan_term} /> -->
+				<div>
+					<GlTitle title={'Loan Term'} />
+					<div class="">
+						<!-- {new Date().toDateString()} -->
+						<input type="date" bind:value={loan_due} min={attributes.min} />
+						<!-- <AddCstmr type="number" label="Number of days" isText={false} bind:value={loan_term} /> -->
+					</div>
 				</div>
-			</div>
+			{:else}
+				<div>
+					<GlTitle title={'When did you issue this Loan?'} />
+					<div class="">
+						<!-- {new Date().toDateString()} -->
+						<input type="date" bind:value={loan_start} />
+						<!-- <AddCstmr type="number" label="Number of days" isText={false} bind:value={loan_term} /> -->
+					</div>
+				</div>
+				<div>
+					<GlTitle title={'When did you issue this Loan?'} />
+					<div class="">
+						<!-- {new Date().toDateString()} -->
+						<input type="date" bind:value={loan_due} min={convertCustomDate4InputMin(loan_start)} />
+						<!-- <AddCstmr type="number" label="Number of days" isText={false} bind:value={loan_term} /> -->
+					</div>
+				</div>
+				<div>
+					<GlTitle title={'Is the loan complete?'} />
+					<div class="flex pl-5 space-x-2 border w-1/2">
+						<div>Check if Yes</div>
+						<input type="checkbox" bind:checked={isComplete} />
+					</div>
+					<div>
+						{isComplete ? 'Yes it is!' : "No it's not!"}
+					</div>
+				</div>
+				{#if !isComplete}
+					<div>
+						<GlTitle title={'How much has been paid?'} />
+						<AddCstmr
+							type="Amount paid sofar"
+							label="Opening fee"
+							isText={false}
+							bind:value={balance}
+						/>
+					</div>{/if}
+			{/if}
 		{:else}
 			<div class="space-y-3">
 				<div>

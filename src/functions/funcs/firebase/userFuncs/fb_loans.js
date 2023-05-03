@@ -1,5 +1,5 @@
 import {
-    setDoc, doc, updateDoc, where, query, collection, or, onSnapshot
+    setDoc, doc, updateDoc, where, query, collection, or, onSnapshot, limit
 } from 'firebase/firestore';
 import { uuidv4 } from '@firebase/util';
 import { fb_db } from '../firebase_init';
@@ -13,7 +13,7 @@ const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessI
 import { updateCapital } from './fb_business'
 import { dateTransfer, getDateToday } from '../../../func_essential';
 
-export async function createLoan(business, customerId, data) {
+export async function createLoan(business, customerId, isNewLoan, data) {
     try {
         let loanId = uuidv4()
         let capital = (business.capital + data['Opening_Fee']) - data['Loan'];
@@ -21,7 +21,9 @@ export async function createLoan(business, customerId, data) {
         data['loanId'] = loanId;
         try {
             await setDoc(loanDoc(business.BusinessId, loanId), data)
-            await updateCapital(business.BusinessId, capital)
+            if (isNewLoan) {
+                await updateCapital(business.BusinessId, capital)
+            }
             await updateDoc(customerDoc(business.BusinessId, customerId), {
                 status: data['status']
             })
@@ -43,19 +45,19 @@ export async function createLoan(business, customerId, data) {
 // }
 
 export async function getLoans(bid) {
+    let firstDate = new Date(new Date().getFullYear() + '-' + (new Date().getMonth()).toString() + '-' + '1')
     const conditions = [where('status', '==', 'active'),]
-    const condition2 = [where('status', '==', 'complete'),where('lastpaid', '>=', new Date(getDateToday().today)),]
+    const condition2 = [where('status', '==', 'complete'), where('lastpaid', '>', firstDate), where('lastpaid', '<=', new Date(getDateToday().today)), limit(10)]
 
-    // await customQuerytablelistenerTemplate(query(loanCol(bid), ...conditions,), bid, loanStore)
     onSnapshot(query(loanCol(bid), ...conditions), async (activeRes) => {
         let list = [];
-        
+
         if (activeRes.docs.length != 0) {
             activeRes.docs.forEach((val) => {
                 if (list.filter(e => e.customerId === val.id).length == 0) {
                     list = [...list, { data: val.data(), customer_id: val.id }]
                 } else {
-                    
+
                 }
             })
         }
@@ -72,23 +74,9 @@ export async function getLoans(bid) {
             loanStore.update((e) => {
                 return { value: list, businessId: bid };
             })
-            });
+        });
     })
-    //    async (fb) => {
-    //         let list = [];
-    //         if (fb.docs.length != 0) {
-    //             fb.docs.forEach((val) => {
-    //                 if (list.filter(e => e.customerId === val.id).length == 0) {
-    //                     list = [...list, { data: val.data(), customer_id: val.id }]
-    //                 } else {
 
-    //                 }
-    //             })
-    //             loanStore.update((e) => {
-    //                 return { value: list, businessId: bid };
-    //             });
-    //         } else cliq_notify('w', 'No results found')
-    //     })
 }
 
 export async function getLoansByDate(bid, from, to) {

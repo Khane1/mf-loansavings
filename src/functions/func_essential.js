@@ -58,7 +58,11 @@ export function convertDate4InputMin() {
     let yourDate = new Date(new Date().getTime() - (offset * 60 * 1000))
     return yourDate.toISOString().split('T')[0]
 }
-
+export function convertCustomDate4InputMin(date) {
+    const offset = new Date(date).getTimezoneOffset()
+    let yourDate = new Date(new Date(date).getTime() - (offset * 60 * 1000))
+    return yourDate.toISOString().split('T')[0]
+}
 // a and b are javascript Date objects
 export function dateDiffInDays(a, b) {
     const _MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -70,7 +74,7 @@ export function dateDiffInDays(a, b) {
 }
 
 
-export function sortCustomers(list,search) {
+export function sortCustomers(list, search) {
     return list
         .sort(function (a, b) {
             if (a.data.name.charAt(0).toUpperCase() < b.data.name.charAt(0).toUpperCase()) {

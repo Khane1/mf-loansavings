@@ -53,7 +53,13 @@
 			undefined && $receiptStore.value != undefined
 			? $receiptStore.value.reduce((a, { data }) => a + data.amount, 0)
 			: 0;
-	$: loansGiven = inComplete.reduce((a, { data }) => a + data.Loan, 0);
+	$: loansGiven = inComplete.reduce(
+		(a, { data }) =>
+			a + timestampToDateTime(data.loan_date_iss) == new Date().toDateString() ////If date of Loan Issue == today add opening fee.
+				? data.Loan
+				: 0,
+		0
+	);
 	let stats = false;
 	$: capital = $businessStore.capital;
 	let fromDate,

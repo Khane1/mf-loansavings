@@ -24,7 +24,7 @@
 	$: interest = (amount * percentage) / 100;
 	$: toBePaid = parseInt(interest) + parseInt(amount);
 	$: newBalance = loanData.balance - amount;
-	export let loanData, customerId;
+	export let loanData;
 	$: userData = $customersStore.value.filter((e) =>
 		e.customer_id.toLowerCase().includes(loanData.customerId)
 	);
@@ -48,7 +48,7 @@
 			createReceipt(
 				$businessStore,
 				{
-					borrowerId: customerId,
+					borrowerId: loanData.customerId,
 					borrower: loanData.borrower,
 					amount,
 					balance: newBalance,

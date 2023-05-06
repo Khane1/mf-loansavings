@@ -1,0 +1,26 @@
+<script>
+	import LoanRow from '../../../../../components/reuseable/loan/loanRow.svelte';
+	import Table from '../../../../../components/reuseable/tables/table.svelte';
+	import { dateDiffInDays } from '../../../../../functions/func_essential';
+	import Active from './active.svelte';
+	import Complete from './complete.svelte';
+	export let list, capital, activeLoanCustomers, isDetail, loanData, completeLoanCustomers;
+</script>
+
+<Table headers={['', 'Borrower', 'Loan', 'interest%', 'To be paid', 'Profit', 'Paid', 'Created']}>
+	{#if list.length > 0}
+		{#if capital != 0}
+			<Active bind:activeLoanCustomers bind:isDetail bind:loanData />
+			<div class="mt-5" />
+			<tr class="	my-3">
+				<td class="underline" style="font-size: x-small;">
+					<span> Loans </span>
+				</td>
+				<td class="underline" style="font-size: x-small;">
+					<span> Completed Today </span>
+				</td>
+			</tr>
+			<Complete bind:isDetail bind:loanData bind:completeLoanCustomers />
+		{/if}
+	{/if}
+</Table>

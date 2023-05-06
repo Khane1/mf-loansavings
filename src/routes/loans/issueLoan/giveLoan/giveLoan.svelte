@@ -30,9 +30,9 @@
 	let collateral = '';
 	let openingFee = 0;
 	let isNewLoan; //false; old loan
-	let loan_due,
-		loan_start = new Date();
-	let loan_date_iss = isNewLoan ? new Date() : loan_start;
+	$: loan_due = new Date();
+	$: loan_start = new Date();
+	$: loan_date_iss = isNewLoan ? new Date() : new Date(loan_start);
 	$: loan_term = isNewLoan
 		? dateDiffInDays(loan_date_iss, new Date(loan_due))
 		: dateDiffInDays(new Date(loan_start), new Date(loan_due));
@@ -46,7 +46,8 @@
 	export let data;
 	export let c_id;
 	$: isComplete = false;
-	let balance = 0;
+	$: lastpaid = '';
+	$: balance = 0;
 </script>
 
 <Modal
@@ -63,27 +64,33 @@
 	}}
 	close={() => (formNo = 1)}
 	action={() => {
-		if ((capital >= amount && amount > 0) || !isNewLoan) {
-			createLoan($businessStore, c_id, isNewLoan, {
-				borrower: data.name,
-				customerId: c_id,
-				Loan: amount,
-				collateral,
-				interest,
-				toBePaid,
-				loan_term,
-				Opening_Fee: openingFee,
-				type: 'original',
-				interest,
-				loan_date_iss,
-				loan_due: new Date(loan_due),
-				balance: isNewLoan ? balance : toBePaid,
-				date: new Date(),
-				lastpaid: isNewLoan ? '' : isComplete ? new Date(loan_due) : '',
-				userUrl: data.userUrl ?? '',
-				status: isComplete ? 'complete' : 'active',
-				newLoan: isNewLoan
-			});
+		if (data.status == 'active') {
+			cliq_notify('d', 'This customer has an active loan.');
+		} else if ((capital >= amount && amount > 0) || !isNewLoan) {
+			if (balance <= toBePaid) {
+				createLoan($businessStore, c_id, isNewLoan, {
+					borrower: data.name,
+					customerId: c_id,
+					Loan: amount,
+					toBePaid,
+					lastpaid: isNewLoan ? '' : isComplete ? new Date(loan_due) : new Date(lastpaid),
+					balance: isNewLoan ? toBePaid : isComplete ? 0 : balance,
+					collateral,
+					interest,
+					loan_term,
+					Opening_Fee: openingFee,
+					type: 'original',
+					interest,
+					loan_date_iss,
+					loan_due: new Date(loan_due),
+					date: new Date(),
+					userUrl: data.userUrl ?? '',
+					status: isComplete ? 'complete' : 'active',
+					newLoan: isNewLoan
+				});
+			} else {
+				cliq_notify('d', 'Balance should be less than Loan');
+			}
 		} else {
 			cliq_notify(
 				'd',
@@ -208,24 +215,30 @@
 				</div>
 				<div>
 					<GlTitle title={'Is the loan complete?'} />
-					<div class="flex pl-5 space-x-2 border w-1/2">
-						<div>Check if Yes</div>
-						<input type="checkbox" bind:checked={isComplete} />
-					</div>
-					<div>
+					<div class=" font-semibold text-blue-800">
 						{isComplete ? 'Yes it is!' : "No it's not!"}
+					</div>
+					<div class="flex space-x-3 py-3 ">
+						<div class="border w-32 flex justify-center ">
+							<div class="px-2">No</div>
+							<input type="radio" class="px-2" value={false} bind:group={isComplete} />
+						</div>
+						<div class="border w-32 flex justify-center ">
+							<div class="px-2">Yes</div>
+							<input type="radio" class="px-2" value={true} bind:group={isComplete} />
+						</div>
 					</div>
 				</div>
 				{#if !isComplete}
 					<div>
-						<GlTitle title={'How much has been paid?'} />
-						<AddCstmr
-							type="Amount paid sofar"
-							label="Opening fee"
-							isText={false}
-							bind:value={balance}
-						/>
-					</div>{/if}
+						<GlTitle title={'What is the balance on the Loan?'} />
+						<AddCstmr type="number" label="Balance" isText={false} bind:value={balance} />
+					</div>
+					<div>
+						<GlTitle title={'When did the customer last make a payment?'} />
+						<input type="date" bind:value={lastpaid} max={convertCustomDate4InputMin(loan_start)} />
+					</div>
+				{/if}
 			{/if}
 		{:else}
 			<div class="space-y-3">

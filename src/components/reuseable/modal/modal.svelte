@@ -11,6 +11,7 @@
 		action,
 		backfunc,
 		backButton;
+	export let pushDown = false;
 	function toggleModal() {
 		showModal = !showModal;
 	}
@@ -25,6 +26,7 @@
 
 {#if showModal}
 	<div
+		style="scroll-behavior: smooth; padding-top:{pushDown ? '120px' : ''} "
 		class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
 	>
 		<div class="relative w-auto my-6 mx-auto max-w-3xl">

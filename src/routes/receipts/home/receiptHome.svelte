@@ -12,6 +12,7 @@
 		getReceiptsByDate
 	} from '../../../functions/funcs/firebase/userFuncs/fb_receipts';
 	import SearchSortModal from '../../../components/reuseable/search/SearchSortModal.svelte';
+	import { cliq_notify } from '../../../components/reuseable/notificationsToast/onNotify';
 	export let addReceipt, loanDetail, loanData;
 	$: list =
 		$receiptStore != undefined && $receiptStore.value != undefined
@@ -42,8 +43,17 @@
 			bind:fromDate
 			bind:toDate
 			submit={() => {
-				searchedState = true;
-				getReceiptsByDate($businessStore.BusinessId, fromDate, toDate);
+				if (
+					fromDate != undefined &&
+					toDate != undefined &&
+					fromDate.length != 0 &&
+					toDate.length != 0
+				) {
+					searchedState = true;
+					getReceiptsByDate($businessStore.BusinessId, fromDate, toDate);
+				} else {
+					cliq_notify('d', 'You cant search without a date.');
+				}
 			}}
 		/>
 
@@ -94,7 +104,7 @@
 <div>
 	<Table headers={['', 'PaymentID', 'Borrower', 'Paid', 'Balance', 'Days left', 'Last paid']}>
 		<div class="hover:text-lg my-3" />
-		{#if receipts.length>0}
+		{#if receipts.length > 0}
 			{#each receipts as receipt, i}
 				<div class="mt-3" />
 				<tr
@@ -102,12 +112,19 @@
 					style="cursor: pointer;"
 					on:keypress
 					on:click={() => {
-						loanDetail = true;
-						loanData =
-							$loanStore.value == undefined
-								? {}
-								: $loanStore.value.filter((e) => e.customer_id === receipt.data.borrowerId)[0].data;
-						console.log(loanData);
+						console.log();
+						if (
+							$loanStore.value.filter((e) => e.customer_id === receipt.data.borrowerId).length == 0
+						) {
+							cliq_notify('w', "We can't find more data on this loan.");
+						} else {
+							loanData =
+								$loanStore.value == undefined
+									? {}
+									: $loanStore.value.filter((e) => e.customer_id === receipt.data.borrowerId)[0]
+											.data;
+							loanDetail = true;
+						}
 					}}
 				>
 					<!-- // loanDetail=true

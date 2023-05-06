@@ -4,12 +4,19 @@
 	import GiveLoan from '../../loans/issueLoan/giveLoan/giveLoan.svelte';
 	import Addreceipt from './addReceipt/addreceipt.svelte';
 	export let click;
+
+	$: activeLoanCustomers =
+		$loanStore != undefined && $loanStore.value != undefined
+			? $loanStore.value.filter((e) => {
+					return e.data.status == 'active';
+			  })
+			: [];
 </script>
 
 <div class="py-5">
 	{#if $loanStore != undefined && $loanStore.value != undefined}
-		{#each $loanStore.value as loan, index}
-			{#if loan.data.balance > 0}
+		{#each activeLoanCustomers as loan, index}
+			{#if loan.data.status == 'active' && loan.data.balance > 0}
 				<LoanUserCard
 					src={loan.data.userUrl}
 					name={loan.data.borrower}
@@ -17,7 +24,7 @@
 					{index}
 					{click}
 				>
-					<Addreceipt loanData={loan.data} customerId={loan.customer_id} />
+					<Addreceipt loanData={loan.data} />
 				</LoanUserCard>
 			{/if}
 		{/each}

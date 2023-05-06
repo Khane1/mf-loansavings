@@ -1,10 +1,11 @@
 <script>
 	import Modal from '../modal/modal.svelte';
 	let formNo = 1;
-	export let submit, fromDate, toDate,title;
+	export let submit, fromDate, toDate, title;
 </script>
 
 <Modal
+	pushDown={false}
 	createTitle={'Search'}
 	title={'Date Search'}
 	modalTitle={title}
@@ -15,7 +16,6 @@
 		submit();
 	}}
 >
-	
 	<div class="space-x-2">
 		<label for="from" class="text-sm"> From</label>
 		<input

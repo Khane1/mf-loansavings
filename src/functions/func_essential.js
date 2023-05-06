@@ -8,16 +8,62 @@ export let p_NHold = (name, data) => {
         });
     }
 }
-
+/////////////////////////////////////
+/////////////Money Functions//////////
 export function MoneyFormat(val, hasCurr) {
     return hasCurr || hasCurr == undefined ? 'ugx.' + Intl.NumberFormat("en-US").format(val) : Intl.NumberFormat("en-US").format(val);
 }
 
-export function timestampToDateTime(date) {
-    return date.toDate().toDateString();
-}
 export function calculateInterest(a, b) {
     return Math.round((a / b) * 100)
+}
+
+
+
+
+/////////////////////////////////////
+/////////////ROLES & RIGHTS//////////
+export let roles = { admin: 'admin', manager: 'manager', cashier: 'cashier', fieldAgent: 'fieldAgent', unallocated: 'unallocated' };
+
+export function execRights(user) {
+    return (user.role == roles.manager ||
+        user.role == roles.admin)
+}
+
+
+
+///////////////////////////////////////////////
+//////////////List Functions////////////////////
+export function sortCustomers(list, search) {
+    return list
+        .sort(function (a, b) {
+            if (a.data.name.charAt(0).toUpperCase() < b.data.name.charAt(0).toUpperCase()) {
+                return -1;
+            }
+            if (a.data.name.charAt(0).toUpperCase() > b.data.name.charAt(0).toUpperCase()) {
+                return 1;
+            }
+            return 0;
+        })
+        .filter((loan) => {
+            return loan.data.name.toLowerCase().includes(search.toLowerCase());
+        });
+}
+export function sortReceipts(savedList) {
+    let newList = [];
+       savedList.forEach(element => {
+        element['saved']=true
+        newList=[...newList,element];
+        console.log(newList);
+
+       });
+    return newList;
+}
+
+////////////////Time functions///////////////
+/////////////////////////////////////////////
+export function timestampToDateTime(date) {
+    return date == undefined || date.length == 0 ? '' : date.toDate().toDateString();
 }
 export function getDateToday() {
     var today = new Date();
@@ -47,12 +93,8 @@ export function customDate(date) {
     // today = yyyy + "/" + mm + "/" + dd;
     return yyyy + '-' + mm + '-' + (parseInt(dd) + 1);
 }
-export let roles = { admin: 'admin', manager: 'manager', cashier: 'cashier', fieldAgent: 'fieldAgent', unallocated: 'unallocated' };
 
-export function execRights(user) {
-    return (user.role == roles.manager ||
-        user.role == roles.admin)
-}
+
 export function convertDate4InputMin() {
     const offset = new Date().getTimezoneOffset()
     let yourDate = new Date(new Date().getTime() - (offset * 60 * 1000))
@@ -73,19 +115,13 @@ export function dateDiffInDays(a, b) {
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
 
+export function getFirstDayOfMonth(year, month) {
+    return new Date(year, month, 1);
+}
+export function getcustomDayOfMonth(year, month, date) {
+    return new Date(year, month, date);
+}
 
-export function sortCustomers(list, search) {
-    return list
-        .sort(function (a, b) {
-            if (a.data.name.charAt(0).toUpperCase() < b.data.name.charAt(0).toUpperCase()) {
-                return -1;
-            }
-            if (a.data.name.charAt(0).toUpperCase() > b.data.name.charAt(0).toUpperCase()) {
-                return 1;
-            }
-            return 0;
-        })
-        .filter((loan) => {
-            return loan.data.name.toLowerCase().includes(search.toLowerCase());
-        });
+export function getLastDayOfMonth(year, month) {
+    return new Date(year, month + 1, 0);
 }

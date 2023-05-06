@@ -11,7 +11,7 @@ const loanCol = (businessId,) => collection(fb_db, 'business', businessId, 'loan
 
 const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessId, 'customers', customerId)
 import { updateCapital } from './fb_business'
-import { dateTransfer, getDateToday } from '../../../func_essential';
+import { customDate, dateTransfer, getDateToday, getFirstDayOfMonth, getcustomDayOfMonth } from '../../../func_essential';
 
 export async function createLoan(business, customerId, isNewLoan, data) {
     try {
@@ -21,12 +21,12 @@ export async function createLoan(business, customerId, isNewLoan, data) {
         data['loanId'] = loanId;
         try {
             await setDoc(loanDoc(business.BusinessId, loanId), data)
-            if (isNewLoan) {
-                await updateCapital(business.BusinessId, capital)
-            }
             await updateDoc(customerDoc(business.BusinessId, customerId), {
                 status: data['status']
             })
+            if (isNewLoan) {
+                await updateCapital(business.BusinessId, capital)
+            }
             cliq_notify('s', 'Loan created')
 
         } catch (error) {
@@ -45,9 +45,13 @@ export async function createLoan(business, customerId, isNewLoan, data) {
 // }
 
 export async function getLoans(bid) {
-    let firstDate = new Date(new Date().getFullYear() + '-' + (new Date().getMonth()).toString() + '-' + '1')
+    const date = new Date();
+    const yesterday = getcustomDayOfMonth(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate() )
     const conditions = [where('status', '==', 'active'),]
-    const condition2 = [where('status', '==', 'complete'), where('lastpaid', '>', firstDate), where('lastpaid', '<=', new Date(getDateToday().today)), limit(10)]
+    const condition2 = [where('status', '==', 'complete'), where('lastpaid', '>=', yesterday),]
 
     onSnapshot(query(loanCol(bid), ...conditions), async (activeRes) => {
         let list = [];

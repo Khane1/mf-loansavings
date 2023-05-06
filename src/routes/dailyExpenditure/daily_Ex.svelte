@@ -6,10 +6,11 @@
 	import Input from '../../components/reuseable/input/input.svelte';
 	import Table from '../../components/reuseable/tables/table.svelte';
 	import PageTitle from '../../components/reuseable/title/pageTitle.svelte';
-	import { MoneyFormat, timestampToDateTime } from '../../functions/func_essential';
+	import { MoneyFormat, sortReceipts, timestampToDateTime } from '../../functions/func_essential';
 	import { createReport } from '../../functions/funcs/firebase/userFuncs/fb_dailyReport';
 	import {
 		businessStore,
+		customersStore,
 		loanStore,
 		receiptStore,
 		reportStore
@@ -19,8 +20,10 @@
 	import Report from './fullReport/report.svelte';
 	$: reportStoreList =
 		$reportStore != undefined && $reportStore.value != undefined
-			? $reportStore.value[0].data.expenseList
+			? sortReceipts($reportStore.value[0].data.expenseList)
 			: [];
+	// sort through the list
+	// add status saved
 	$: List = reportStoreList;
 	let item = '';
 	let amount;
@@ -32,8 +35,15 @@
 	let type = '';
 	$: exp = (type) =>
 		List.filter((item) => {
-			return item.type.includes(type);
+			return !item.saved && item.type.includes(type);
 		}).reduce((a, { amount }) => a + amount, 0);
+	$: cap_expTotal = (type) => {
+		let list = [];
+		list = List.filter((item) => {
+			return item.type.includes(type);
+		});
+		return list.length > 0 ? list.reduce((a, { amount }) => a + amount, 0) : 0;
+	};
 	$: sorted = (itemVal, amount) =>
 		reportStoreList.filter((item) => {
 			return item.item.includes(itemVal) && item.amount.toString().includes(amount);
@@ -51,18 +61,19 @@
 			? $receiptStore.value.sort((a, b) => b.data.last_paid - a.data.last_paid)
 			: [];
 	$: loansToday = loanlist.filter((e) => {
-		console.log(e);
-		return (
-			e.data.lastpaid.length != 0 &&
-			timestampToDateTime(e.data.lastpaid) == new Date().toDateString()
-		);
+		return timestampToDateTime(e.data.loan_date_iss) == new Date().toDateString();
 	});
-	$: cashIn = loansToday.reduce(
-		(a, { data }) => a + (data.newLoan==true || data.newLoan == undefined
-				? data.toBePaid + data.Opening_Fee - data.balance
-				: data.toBePaid - data.balance),
-		0
-	);
+	$: cashIn =
+		loansToday.reduce(
+			(a, { data }) =>
+				a +
+				(data.newLoan == true ||
+				(data.newLoan != undefined &&
+					timestampToDateTime(data.loan_date_iss) == new Date().toDateString())
+					? data.toBePaid + data.Opening_Fee - data.balance
+					: 0),
+			0
+		) + receiptlist.reduce((a, { data }) => a + data.amount, 0);
 	$: completeLoans = loansToday.filter((e) => {
 		return e.data.balance == 0;
 	}).length;
@@ -70,6 +81,25 @@
 	$: areEqual = (array1, array2) => {
 		return JSON.stringify(array1) === JSON.stringify(array2);
 	};
+	$: getCustomersPaid = () => {
+		let Ids = [];
+		$receiptStore.value.forEach((receipt) => {
+			$loanStore.value.forEach((loan) => {
+				if (
+					receipt.data.borrowerId == loan.data.customerId &&
+					!Ids.includes(receipt.data.borrowerId)
+				) {
+					console.log(receipt.data.borrowerId);
+					Ids = [...Ids, receipt.data.borrowerId];
+				}
+			});
+		});
+		return Ids;
+	};
+	$: T_No_Inactive = JSON.stringify($customersStore.value.length - $loanStore.value.length);
+	$: T_No_LoansToday = $loanStore.value.length;
+	$: newLoans = loansToday.length;
+	$: T_No_cus_Paid = JSON.stringify(getCustomersPaid().length);
 </script>
 
 <span class="text-sm"> Capital/Expenditure </span>
@@ -97,12 +127,6 @@
 					<span class="text-sm underline flex justify-center"> Add To Today's Report </span>
 					<div>
 						<div class="text-sm flex justify-evenly space-x-1">
-							<!-- <div class="text-red-500">Required</div>
-				<select class="border" name="Type" id="">
-					<option value="">Type</option>
-					<option value="">Capital</option>
-					<option value="">Expenditure</option>
-				</select> -->
 							<BtnOpt
 								click={() => {
 									type = 'Expenditure';
@@ -169,7 +193,9 @@
 									on:click={() => {
 										item = type;
 										if (amount != 0) {
-											(List = [...List, { amount, item, type }]), (amount = ''), (item = '');
+											(List = [...List, { amount, item, type, saved: false }]),
+												(amount = ''),
+												(item = '');
 										}
 									}}>Add to List ✜</span
 								>{/if}
@@ -200,18 +226,27 @@
 								? 'Update Report '
 								: 'Save Report'}
 							click={() => {
-								createReport($businessStore, $reportStore != undefined && $reportStore.value != undefined? $reportStore.value:undefined, {
-									cashIn: cashIn,
-									no_Clientspaid: loansToday.length,
-									cashOut: cashOut.reduce((a, { data }) => a + data.Loan, 0),
-									closingBalance: $businessStore.capital + exp('Capital') - exp('Expenditure'),
-									capitalAdded: exp('Capital'),
-									expenseTotal: exp('Expenditure'),
-									expenseList: List,
-									clearedLoans: completeLoans,
-									date: new Date()
-									//  opening balance,
-								});
+								createReport(
+									$businessStore,
+									$reportStore != undefined && $reportStore.value != undefined
+										? $reportStore.value
+										: undefined,
+									{
+										cashIn: cashIn,
+										cashOut: cashOut.reduce((a, { data }) => a + data.Loan, 0),
+										closingBalance: $businessStore.capital + exp('Capital') - exp('Expenditure'),
+										capitalAdded: cap_expTotal('Capital'),
+										expenseTotal: cap_expTotal('Expenditure'),
+										expenseList: List,
+										clearedLoans: completeLoans,
+										date: new Date(),
+										T_No_Inactive,
+										T_No_LoansToday,
+										T_No_cus_Paid,
+										newLoans
+										//  opening balance,
+									}
+								);
 							}}
 						/>{/if}
 				</div>
@@ -226,9 +261,7 @@
 					<div class="mt-3 " />
 					<tr
 						class="{(data.type == 'Capital' ? 'cap' : 'exp',
-						sorted(data.item, data.amount).length == 0
-							? 'hover:text-red-500'
-							: '')} bg-slate-50 space-y-4"
+						!data.saved ? 'hover:text-red-500' : '')} bg-slate-50 space-y-4"
 						style="cursor: pointer;"
 						on:keypress
 						on:click={() => remove(data)}
@@ -243,7 +276,7 @@
 							>{new Date().toDateString()}</td
 						>
 						<td class="text-sm font-light px-6 py-2 whitespace-nowrap">{data.type}</td>
-						{#if sorted(data.item, data.amount).length == 0}
+						{#if !data.saved}
 							<td> &times;</td>
 						{/if}
 					</tr>
@@ -256,16 +289,6 @@
 {/if}
 
 <!-- 
- cashIn, 
- cashOut, 
- opening balance,
- closing balance ,
- expenses, 
- List of expenses , 
- list of cashouts Today, 
- number of paying clients, 
- cleared clients
-
 	Have a part where the business is able to put 
 	current cash balance in safe
 	this should help make data clear. 

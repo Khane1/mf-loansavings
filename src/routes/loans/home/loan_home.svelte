@@ -50,7 +50,7 @@
 			0
 		) +
 			$receiptStore !=
-			undefined && $receiptStore.value != undefined
+			undefined && $receiptStore?.value != undefined
 			? $receiptStore.value.reduce((a, { data }) => a + data.amount, 0)
 			: 0;
 	$: loansGiven = inComplete.reduce(

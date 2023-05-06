@@ -54,8 +54,6 @@ export function sortReceipts(savedList) {
        savedList.forEach(element => {
         element['saved']=true
         newList=[...newList,element];
-        console.log(newList);
-
        });
     return newList;
 }

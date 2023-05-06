@@ -9,11 +9,13 @@
 			: 0;
 	$: overallActive =
 		inComplete.length > 0
-			? $receiptStore.value
-					.filter((receipt) => {
-						return receipt.data.balance > 0;
-					})
-					.reduce((a, { data }) => a + data.amount, 0)
+			? $receiptStore != undefined && $receiptStore.value != undefined
+				? $receiptStore.value
+						.filter((receipt) => {
+							return receipt.data.balance > 0;
+						})
+						.reduce((a, { data }) => a + data.amount, 0)
+				: 0
 			: 0;
 </script>
 

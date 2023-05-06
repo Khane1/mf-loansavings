@@ -96,8 +96,13 @@
 		});
 		return Ids;
 	};
-	$: T_No_Inactive = JSON.stringify($customersStore.value.length - $loanStore.value.length);
-	$: T_No_LoansToday = $loanStore.value.length;
+	$: T_No_Inactive = JSON.stringify(
+		$customersStore != undefined && $customersStore.value != undefined
+			? $customersStore.value.length - $loanStore.value.length
+			: 0
+	);
+	$: T_No_LoansToday =
+		$loanStore != undefined && $loanStore.value != undefined ? $loanStore.value.length : 0;
 	$: newLoans = loansToday.length;
 	$: T_No_cus_Paid = JSON.stringify(getCustomersPaid().length);
 </script>

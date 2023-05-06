@@ -14,35 +14,39 @@
 			<div class={$screenSizeStore.size < 768 ? '' : ' flex justify-center  pb-20 '}>
 				<div class={$screenSizeStore.size < 768 ? 'flex justify-center py-10' : ''}>
 					<div class=" w-72 px-5 shadow-xl">
-						<CtmrDtl title={'Date'} data={timestampToDateTime(val.data.date)} />
-						<CtmrDtl title={'CapitalAdded'} data={MoneyFormat(val.data.capitalAdded)} />
-						<CtmrDtl title={'ClearedLoans'} data={val.data.clearedLoans} />
-						<CtmrDtl title={'New Loans Today'} data={val.data.newLoans} />
+						<CtmrDtl title={'Date'} data={timestampToDateTime(val.data.date ?? '')} />
+						<CtmrDtl title={'CapitalAdded'} data={MoneyFormat(val.data.capitalAdded ?? '')} />
+						<CtmrDtl title={'ClearedLoans'} data={val.data.clearedLoans ?? ''} />
+						<CtmrDtl title={'New Loans Today'} data={val.data.newLoans ?? ''} />
 					</div>
 				</div>
 				<div>
 					<div class={$screenSizeStore.size < 768 ? 'flex justify-center py-10' : ''}>
 						<div class=" w-72 px-5 shadow-xl">
-							<CtmrDtl title={'Inactive Clients'} data={val.data.T_No_Inactive} />
-							<CtmrDtl title={'Active Client Loans'} data={val.data.T_No_LoansToday} />
+							<CtmrDtl title={'Inactive Clients'} data={val.data.T_No_Inactive ?? ''} />
+							<CtmrDtl title={'Active Client Loans'} data={val.data.T_No_LoansToday ?? ''} />
 							<div class="flex justify-end">
-								<hr class="w-10">
+								<hr class="w-10" />
 							</div>
-							<CtmrDtl title={'Total No. Clients'} data={JSON.parse(val.data.T_No_Inactive)+JSON.parse(val.data.T_No_LoansToday)} />
+							<CtmrDtl
+								title={'Total No. Clients'}
+								data={JSON.parse(val.data.T_No_Inactive ?? '') +
+									JSON.parse(val.data.T_No_LoansToday ?? '')}
+							/>
 							<div class="flex justify-end">
-								<hr class="w-10">
+								<hr class="w-10" />
 							</div>
-							<CtmrDtl title={'Active Loans paid today'} data={val.data.T_No_cus_Paid} />
+							<CtmrDtl title={'Active Loans paid today'} data={val.data.T_No_cus_Paid ?? ''} />
 						</div>
 					</div>
 				</div>
 				<div class={$screenSizeStore.size < 768 ? 'flex justify-center' : ''}>
 					<div class="w-72 px-5 shadow-xl">
-						<CtmrDtl title={'CashOut'} data={MoneyFormat(val.data.cashOut)} />
-						<CtmrDtl title={'CashIn'} data={MoneyFormat(val.data.cashIn)} />
+						<CtmrDtl title={'CashOut'} data={MoneyFormat(val.data.cashOut ?? '')} />
+						<CtmrDtl title={'CashIn'} data={MoneyFormat(val.data.cashIn ?? '')} />
 
-						<CtmrDtl title={'ExpenseTotal'} data={MoneyFormat(val.data.expenseTotal)} />
-						<CtmrDtl title={'ClosingBalance'} data={MoneyFormat(val.data.closingBalance)} />
+						<CtmrDtl title={'ExpenseTotal'} data={MoneyFormat(val.data.expenseTotal ?? '')} />
+						<CtmrDtl title={'ClosingBalance'} data={MoneyFormat(val.data.closingBalance ?? '')} />
 					</div>
 				</div>
 			</div>

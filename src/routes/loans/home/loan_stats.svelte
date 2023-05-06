@@ -4,8 +4,6 @@
 	import { timestampToDateTime } from '../../../functions/func_essential';
 	import { loanStore, receiptStore, screenSizeStore } from '../../../functions/funcs/stores';
 	import LoanStatsBody from './loanStatsBody.svelte';
-
-	export let inComplete, complete, cashIn, loansGiven, officeFee;
 	let formNo = 1;
 	$: list =
 		$loanStore != undefined && $loanStore.value != undefined

@@ -1,8 +1,10 @@
 <script>
 	import CtmrDtl from '../../../components/reuseable/customer/ctmrDtl.svelte';
 	import { MoneyFormat, timestampToDateTime } from '../../../functions/func_essential';
-	import { businessStore, receiptStore } from '../../../functions/funcs/stores';
-	export let inComplete, complete, cashIn, loansGiven, officeFee;
+	import { businessStore, loanStore, receiptStore } from '../../../functions/funcs/stores';
+	$: inComplete = list.filter((loan) => {
+		return loan.data.balance > 0 && loan.data.status == 'active';
+	});
 	$: activeRepTtl =
 		inComplete.length > 0 && $receiptStore != undefined && $receiptStore.value != undefined
 			? $receiptStore.value.reduce((a, { data }) => a + data.amount, 0)
@@ -17,6 +19,45 @@
 						.reduce((a, { data }) => a + data.amount, 0)
 				: 0
 			: 0;
+			$: list =
+		$loanStore != undefined && $loanStore.value != undefined
+			? $loanStore.value.sort((a, b) => b.data.loan_date_iss - a.data.loan_date_iss)
+			: [];
+	
+	$: complete = list.filter((loan) => {
+		return (
+			loan.data.balance == 0 && timestampToDateTime(loan.data.lastpaid) == new Date().toDateString()
+		);
+	});
+	$: cashIn =
+		list.reduce(
+			(a, { data }) =>
+				a +
+				((data.newLoan == true || data.newLoan == undefined) && ///If loan is new add opening fee.
+				timestampToDateTime(data.loan_date_iss) == new Date().toDateString() ////If date of Loan Issue == today add opening fee.
+					? data.toBePaid + data.Opening_Fee - data.balance
+					: 0),
+			0
+		) +
+			$receiptStore !=
+			undefined && $receiptStore?.value != undefined
+			? $receiptStore.value.reduce((a, { data }) => a + data.amount, 0)
+			: 0;
+	$: loansGiven = inComplete.reduce(
+		(a, { data }) =>
+			a + timestampToDateTime(data.loan_date_iss) == new Date().toDateString() ////If date of Loan Issue == today add opening fee.
+				? data.Loan
+				: 0,
+		0
+	);
+	$: officeFee = list
+		.filter((loan) => {
+			return (
+				(loan.data.newLoan == true || loan.data.newLoan == undefined) &&
+				timestampToDateTime(loan.data.loan_date_iss) == new Date().toDateString()
+			);
+		})
+		.reduce((a, { data }) => a + data.Opening_Fee, 0);
 </script>
 
 <div class="flex justify-evenly space-x-5">

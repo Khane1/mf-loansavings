@@ -31,35 +31,6 @@
 			? $loanStore.value.sort((a, b) => b.data.loan_date_iss - a.data.loan_date_iss)
 			: [];
 	$: search = '';
-	$: complete = list.filter((loan) => {
-		return (
-			loan.data.balance == 0 && timestampToDateTime(loan.data.lastpaid) == new Date().toDateString()
-		);
-	});
-	$: inComplete = list.filter((loan) => {
-		return loan.data.balance > 0 && loan.data.status == 'active';
-	});
-	$: cashIn =
-		list.reduce(
-			(a, { data }) =>
-				a +
-				((data.newLoan == true || data.newLoan == undefined) && ///If loan is new add opening fee.
-				timestampToDateTime(data.loan_date_iss) == new Date().toDateString() ////If date of Loan Issue == today add opening fee.
-					? data.toBePaid + data.Opening_Fee - data.balance
-					: 0),
-			0
-		) +
-			$receiptStore !=
-			undefined && $receiptStore?.value != undefined
-			? $receiptStore.value.reduce((a, { data }) => a + data.amount, 0)
-			: 0;
-	$: loansGiven = inComplete.reduce(
-		(a, { data }) =>
-			a + timestampToDateTime(data.loan_date_iss) == new Date().toDateString() ////If date of Loan Issue == today add opening fee.
-				? data.Loan
-				: 0,
-		0
-	);
 	let stats = false;
 	$: capital = $businessStore.capital;
 	let fromDate,
@@ -73,20 +44,12 @@
 	$: completeLoanCustomers = customer.filter((e) => {
 		return e.data.status == 'complete';
 	});
-	$: officeFee = list
-		.filter((loan) => {
-			return (
-				(loan.data.newLoan == true || loan.data.newLoan == undefined) &&
-				timestampToDateTime(loan.data.loan_date_iss) == new Date().toDateString()
-			);
-		})
-		.reduce((a, { data }) => a + data.Opening_Fee, 0);
 	let searchedStatus = false;
 </script>
 
 <!-- {list.reduce((a, { data }) => a + data.toBePaid - data.balance, 0)} -->
 {#if $screenSizeStore.size < 1000}
-	<LoanStats bind:inComplete bind:complete bind:cashIn bind:loansGiven bind:officeFee />
+	<LoanStats />
 {:else}
 	<div class="flex justify-between pb-4">
 		<div class="flex">
@@ -122,7 +85,7 @@
 						getLoans($businessStore.BusinessId);
 					}}
 				/>{:else}
-				<LoanStats bind:inComplete bind:complete bind:cashIn bind:loansGiven bind:officeFee />
+				<LoanStats />
 			{/if}
 		</div>
 		<div class="">

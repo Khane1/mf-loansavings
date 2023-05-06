@@ -83,17 +83,19 @@
 	};
 	$: getCustomersPaid = () => {
 		let Ids = [];
-		$receiptStore.value.forEach((receipt) => {
-			$loanStore.value.forEach((loan) => {
-				if (
-					receipt.data.borrowerId == loan.data.customerId &&
-					!Ids.includes(receipt.data.borrowerId)
-				) {
-					console.log(receipt.data.borrowerId);
-					Ids = [...Ids, receipt.data.borrowerId];
-				}
-			});
-		});
+		$receiptStore == undefined && $receiptStore?.value == undefined
+			? []
+			: $receiptStore.value.forEach((receipt) => {
+					$loanStore.value.forEach((loan) => {
+						if (
+							receipt.data.borrowerId == loan.data.customerId &&
+							!Ids.includes(receipt.data.borrowerId)
+						) {
+							console.log(receipt.data.borrowerId);
+							Ids = [...Ids, receipt.data.borrowerId];
+						}
+					});
+			  });
 		return Ids;
 	};
 	$: T_No_Inactive = JSON.stringify(

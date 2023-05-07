@@ -85,8 +85,7 @@
 		let Ids = [];
 		$receiptStore != undefined &&
 			$receiptStore.value != undefined &&
-			$receiptStore.value.length == 0;
-		$loanStore != undefined && $loanStore.value != undefined && $loanStore.value.length != 0
+		$loanStore != undefined && $loanStore.value != undefined 
 			? $receiptStore.value.forEach((receipt) => {
 					$loanStore.value.forEach((loan) => {
 						if (

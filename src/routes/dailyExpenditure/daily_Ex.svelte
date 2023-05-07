@@ -84,8 +84,9 @@
 	$: getCustomersPaid = () => {
 		let Ids = [];
 		$receiptStore != undefined &&
-			$receiptStore.value != undefined &&
-		$loanStore != undefined && $loanStore.value != undefined 
+		$receiptStore.value != undefined &&
+		$loanStore != undefined &&
+		$loanStore.value != undefined
 			? $receiptStore.value.forEach((receipt) => {
 					$loanStore.value.forEach((loan) => {
 						if (
@@ -101,7 +102,10 @@
 		return Ids;
 	};
 	$: T_No_Inactive = JSON.stringify(
-		$customersStore != undefined && $customersStore.value != undefined
+		$customersStore != undefined &&
+			$customersStore.value != undefined &&
+			$loanStore != undefined &&
+			$loanStore.value != undefined
 			? $customersStore.value.length - $loanStore.value.length
 			: 0
 	);

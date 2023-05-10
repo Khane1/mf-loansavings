@@ -1,5 +1,5 @@
 import {
-    setDoc, doc, deleteDoc
+    setDoc, doc, deleteDoc, updateDoc
 } from 'firebase/firestore';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';
@@ -9,6 +9,8 @@ import { tablelistenerTemplate } from './fb_universal';
 import { uploadItemImage } from './fb_imageUpload';
 
 const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessId, 'customers', customerId)
+
+let errorMessage = () => cliq_notify('d', 'Error Occured Try again');
 
 export async function createCustomer(bid, rawfile, gua_RawFile, data) {
     let userUrl = await uploadItemImage(rawfile)
@@ -25,10 +27,28 @@ export async function createCustomer(bid, rawfile, gua_RawFile, data) {
             console.log(e);
         })
     } catch (error) {
-        cliq_notify('d', 'Error Occured Try again')
+        errorMessage();
         console.log(error);
     }
 
+}
+export async function updatecustomerImage(bid, rawfile, gua_RawFile, data) {
+    let doc = customerDoc(bid, data.customerId)
+    try {
+        if (rawfile.avatar != undefined && rawfile.avatar.length > 0) {
+            let userUrl = await uploadItemImage(rawfile)
+            await updateDoc(doc, {
+                userUrl
+            }).then((e) => cliq_notify('s', 'Update Complete'))
+        } else if (gua_RawFile != undefined && gua_RawFile.avatar.length > 0) {
+            let gua_Url = await uploadItemImage(gua_RawFile)
+            await updateDoc(doc, {
+                gua_Url
+            }).then((e) => cliq_notify('s', 'Update Complete'))
+        }
+    } catch (error) {
+        errorMessage();
+    }
 }
 export async function deleteCustomer(bid, customerId) {
     try {
@@ -36,7 +56,7 @@ export async function deleteCustomer(bid, customerId) {
         await deleteDoc(customerDoc(bid, customerId))
         cliq_notify('s', 'customer deleted')
     } catch (error) {
-        cliq_notify('d', 'Error Occured Try again')
+        errorMessage();
         console.log(error);
     }
 }

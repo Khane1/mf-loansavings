@@ -22,7 +22,7 @@
 	onMount((e) => {});
 	$: list =
 		$customersStore != undefined && $customersStore.value != undefined
-			? $customersStore.value.sort((a, b) => b.data.name - a.data.name)
+			? $customersStore.value.sort((a, b) => b.data.name > a.data.name)
 			: [];
 
 	$: customers = sortCustomers(list, search);

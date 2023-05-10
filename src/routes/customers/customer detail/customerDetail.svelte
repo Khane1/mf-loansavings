@@ -4,13 +4,20 @@
 	import ActionBtn from '../../../components/reuseable/buttons/actionBtn.svelte';
 	import AddCstmr from '../../../components/reuseable/customer/addCstmr.svelte';
 	import CtmrDtl from '../../../components/reuseable/customer/ctmrDtl.svelte';
+	import { cliq_notify } from '../../../components/reuseable/notificationsToast/onNotify';
 	import PageTitle from '../../../components/reuseable/title/pageTitle.svelte';
 	import { MoneyFormat } from '../../../functions/func_essential';
-	import { deleteCustomer } from '../../../functions/funcs/firebase/userFuncs/fb_customers';
+	import {
+		deleteCustomer,
+		updatecustomerImage
+	} from '../../../functions/funcs/firebase/userFuncs/fb_customers';
 	import { businessStore } from '../../../functions/funcs/stores';
 	import GiveLoan from '../../loans/issueLoan/giveLoan/giveLoan.svelte';
 	import ConfirmDelete from './confirmDelete.svelte';
+	import UpdateCustomerImage from './update/updateCustomerImage.svelte';
 	export let isDetail, userData;
+	$: avatar = undefined;
+	$: gua_avatar = userData.gua_avatar;
 </script>
 
 <div class="flex justify-between">
@@ -19,18 +26,21 @@
 		<PageTitle title={'← Customer Details'} />
 	</div>
 	<div class="flex justify-evenly">
-		{#if userData.status=='inactive'}
+		{#if userData.status == 'inactive'}
 			<ConfirmDelete bind:userData />
 		{/if}
 		<GiveLoan data={userData} />
 	</div>
 </div>
-
 <div class="flex justify-evenly pt-10">
 	<!-- <div /> -->
 	<div class="border shadow-2xl w-auto  rounded-3xl p-8  ">
 		<div class="flex justify-center  pt-5 ">
-			<Avatar src={userData.userUrl} size={2} />
+			{#if userData.userUrl != undefined && userData.userUrl.length > 0}
+				<Avatar src={userData.userUrl} size={2} />
+			{:else}
+				<UpdateCustomerImage bind:avatar bind:userData bind:isDetail isGuarantor={false} />
+			{/if}
 		</div>
 		<div class="flex justify-center   pt-1 pb-2">
 			<div class="font-semibold text-slate-600">{userData.name}</div>
@@ -55,7 +65,17 @@
 	</div>
 	<div class=" px-5 pt-10 space-y-1  border shadow-xl rounded-2xl">
 		<div class="flex justify-center">
-			<Avatar src={userData.gua_Url} size={0} />
+			{#if userData.gua_Url != undefined &&  userData.gua_Url.length > 0}
+				<Avatar src={userData.gua_Url} size={0} />
+			{:else}
+				<UpdateCustomerImage
+					bind:avatar
+					bind:userData
+					bind:isDetail
+					isGuarantor={true}
+					bind:gua_avatar
+				/>
+			{/if}
 		</div>
 		<div class="flex justify-center text-sm pt-2 text-slate-500">Guarantor</div>
 		<div class="w-48">

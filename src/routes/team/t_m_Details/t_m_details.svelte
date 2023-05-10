@@ -6,19 +6,21 @@
 	import { customersStore } from '../../../functions/funcs/stores';
 	export let data, isDetail;
 	let count;
-	$: sortCount = $customersStore.value.filter((loan) =>
-		loan.data.fieldAgent?.toLowerCase().includes(data.name.toLowerCase())
-	);
+	$: sortCount =
+		$customersStore != undefined && $customersStore.value != undefined
+			? $customersStore.value.filter((loan) =>
+					loan.data.fieldAgent?.toLowerCase().includes(data.name.toLowerCase())
+			  )
+			: [];
 	console.log(data.name);
 </script>
+
 <div class="flex justify-center pt-7">
 	<div class="border shadow-2xl w-80  rounded-3xl p-8  ">
 		<div class="flex justify-center ">
 			<Avatar
-				src={ 
-				data.memberUrl??
-				"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Uganda_-_Ruwenzori_Mountain_Lady.jpg/330px-Uganda_-_Ruwenzori_Mountain_Lady.jpg"
-				}
+				src={data.memberUrl ??
+					'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Uganda_-_Ruwenzori_Mountain_Lady.jpg/330px-Uganda_-_Ruwenzori_Mountain_Lady.jpg'}
 				size={2}
 			/>
 		</div>

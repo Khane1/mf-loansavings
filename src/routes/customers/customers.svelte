@@ -8,7 +8,12 @@
 	import Table from '../../components/reuseable/tables/table.svelte';
 	import HeaderSidebar from '../../components/reuseable/title/headerSidebar.svelte';
 	import PageTitle from '../../components/reuseable/title/pageTitle.svelte';
-	import { businessStore, capitalStore, customersStore, screenSizeStore } from '../../functions/funcs/stores';
+	import {
+		businessStore,
+		capitalStore,
+		customersStore,
+		screenSizeStore
+	} from '../../functions/funcs/stores';
 	import AddCustomer from './addCustomer/addCustomer.svelte';
 	import CustomerDetail from './customer detail/customerDetail.svelte';
 	import { sortCustomers } from '../../functions/func_essential';
@@ -28,16 +33,17 @@
 	$: customers = sortCustomers(list, search);
 	$: search = '';
 </script>
+
 {#if $screenSizeStore.size < 1000}
-<div class="flex justify-between">
-	<div class="mb-5 pl-2">
-		<PageTitle title="Customers" />
+	<div class="flex justify-between">
+		<div class="mb-5 pl-2">
+			<PageTitle title="Customers" />
+		</div>
+		<AddCustomer />
 	</div>
-	<AddCustomer />
-</div>
-<div>
-	<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
-</div>
+	<div>
+		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
+	</div>
 {/if}
 {#if $screenSizeStore.size > 1000}
 	{#if isDetail}
@@ -58,7 +64,11 @@
 				</div>
 				<ActionBtn click={true} title={'GO'} />
 			</div>
-			<AddCustomer />
+			<div class="space-x-1 flex">
+				<div class="text-xs border py-2 px-2">{list.length} Clients</div>
+				<AddCustomer />
+				
+			</div>
 		</div>
 
 		<div class="pt-5" />

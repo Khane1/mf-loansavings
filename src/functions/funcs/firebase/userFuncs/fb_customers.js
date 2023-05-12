@@ -1,11 +1,11 @@
 import {
-    setDoc, doc, deleteDoc, updateDoc, limit, query, collection
+    setDoc, doc, deleteDoc, updateDoc, limit, query, collection, orderBy, endAt, startAt, startAfter, where
 } from 'firebase/firestore';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';
 import { uuidv4 } from '@firebase/util';
-import { customersStore, loadingStateStore } from '../../stores';
-import { customDocumentTablelistenerTemplate, tablelistenerTemplate } from './fb_universal';
+import { customerSearchStore, customersStore, loadingStateStore } from '../../stores';
+import { customDocumentTablelistenerTemplate, customQuerytablelistenerTemplate, tablelistenerTemplate } from './fb_universal';
 import { uploadItemImage } from './fb_imageUpload';
 import { updateBusinessClients } from './fb_business';
 
@@ -66,13 +66,13 @@ export async function deleteCustomer(bid, customerId) {
 }
 
 export async function customerTablelistener(business_id) {
-    // loadingStateStore.update((e) => { return { state: 'loading' } })
-    // let route = 'business/' + business_id + '/customers'
-    // await tablelistenerTemplate(route, business_id, customersStore)
-    // loadingStateStore.update((e) => { return { state: 'loading' } })
-
-    const conditions = [limit(10)]
-    await customDocumentTablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customersStore)
+    const conditions = [orderBy('name'), limit(10)]
+    await customQuerytablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customersStore)
 }
 
+export async function searchCustomer(business_id, name) {
+    const conditions = [where('name', '>=', name.toUpperCase()),where('name', '<=', name),limit(3)]
+    await customDocumentTablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customerSearchStore)
+
+}
 

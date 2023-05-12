@@ -1,3 +1,4 @@
+import { searchCustomer } from "./funcs/firebase/userFuncs/fb_customers";
 import { pageRouteStore } from "./funcs/stores";
 
 export let p_NHold = (name, data) => {
@@ -34,8 +35,8 @@ export function execRights(user) {
 
 ///////////////////////////////////////////////
 //////////////List Functions////////////////////
-export function sortCustomers(list, search) {
-    return list
+export function sortCustomers(business, list, search) {
+    let sort = list
         .sort(function (a, b) {
             if (a.data.name.charAt(0).toUpperCase() < b.data.name.charAt(0).toUpperCase()) {
                 return -1;
@@ -46,15 +47,22 @@ export function sortCustomers(list, search) {
             return 0;
         })
         .filter((loan) => {
-            return loan.data.name.toLowerCase().includes(search.toLowerCase());
+            return loan.data.name.toLowerCase().includes(search.toLowerCase()) || loan.data.name.toLowerCase().startsWith(search.toLowerCase());
         });
+    if (sort.length > 0) {
+        return sort
+    } else {
+        searchCustomer(business.BusinessId, search)
+        return sort
+    }
+
 }
 export function sortReceipts(savedList) {
     let newList = [];
-       savedList.forEach(element => {
-        element['saved']=true
-        newList=[...newList,element];
-       });
+    savedList.forEach(element => {
+        element['saved'] = true
+        newList = [...newList, element];
+    });
     return newList;
 }
 

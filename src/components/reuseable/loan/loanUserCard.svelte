@@ -10,7 +10,7 @@
 </script>
 <div class=" pt-5 flex justify-center pr-10 ">
     <span class="pr-4 pt-2 font-semibold">{index+1}.</span>
-	<Avatar {src} />
+	<Avatar src={src.length>0?src:undefined} upload={false}/>
 	<div class="px-2 w-32">
 		<AvatarName top="1" {name} />
 		<div class="pl-2 text-sm">{status}</div>

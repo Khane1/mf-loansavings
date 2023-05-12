@@ -11,6 +11,7 @@
 	import {
 		businessStore,
 		capitalStore,
+		customerSearchStore,
 		customersStore,
 		screenSizeStore
 	} from '../../functions/funcs/stores';
@@ -18,6 +19,8 @@
 	import CustomerDetail from './customer detail/customerDetail.svelte';
 	import { sortCustomers } from '../../functions/func_essential';
 	import CustomerTable from './table/customerTable.svelte';
+	import { cliq_notify } from '../../components/reuseable/notificationsToast/onNotify';
+	import { customerTablelistener } from '../../functions/funcs/firebase/userFuncs/fb_customers';
 	let isDetail = false;
 	let userData;
 	function getData(data) {
@@ -25,13 +28,30 @@
 		userData = data;
 	}
 	onMount((e) => {});
-	$: list =
-		$customersStore != undefined && $customersStore.value != undefined
-			? $customersStore.value.sort((a, b) => b.data.name > a.data.name)
-			: [];
+	$: isSearched = false;
+	$: list = isSearched
+		? $customerSearchStore != undefined && $customerSearchStore.value != undefined
+			? $customerSearchStore.value.sort((a, b) => b.data.name > a.data.name)
+			: []
+		: $customersStore != undefined && $customersStore.value != undefined
+		? $customersStore.value
+		.filter((e)=>{return e.data.name.toLowerCase().includes(search)})
+		.sort((a, b) => b.data.name > a.data.name)
+		: [];
 
-	$: customers = sortCustomers(list, search);
+	$: customers = list;
 	$: search = '';
+	function searchFunction() {
+		if (!isSearched || (isSearched && customers.length == 0)) {
+			if (search.length > 0) {
+				customers = sortCustomers($businessStore, list, search);
+				isSearched = true;
+			} else cliq_notify('d', 'Please search for user by name.');
+		} else {
+			search = '';
+			customerTablelistener($businessStore.BusinessId), (isSearched = false);
+		}
+	}
 </script>
 
 {#if $screenSizeStore.size < 1000}
@@ -54,25 +74,38 @@
 
 			<div class=" flex justify-start">
 				<div class="w-30">
-					<Input
-						placeholder="Search for customer"
-						keydown={() => {}}
-						bind:value={search}
-						isText={true}
-						type="text"
-					/>
+					{#if !isSearched || (isSearched && customers.length == 0)}
+						<Input
+							placeholder="Search for customer"
+							keydown={() => {}}
+							bind:value={search}
+							isText={true}
+							type="text"
+						/>
+					{/if}
 				</div>
-				<ActionBtn click={true} title={'GO'} />
+				<ActionBtn
+					click={() => {
+						searchFunction();
+					}}
+					title={!isSearched || (isSearched && customers.length == 0) ? 'Search' : 'Reset'}
+				/>
 			</div>
 			<div class="space-x-1 flex">
-				<div class="text-xs border py-2 px-2">{list.length} Clients</div>
+				<div class="text-xs border py-2 px-2">{$businessStore.clients} Clients</div>
 				<AddCustomer />
-				
 			</div>
 		</div>
 
 		<div class="pt-5" />
 		<!-- {JSON.stringify($businessStore.BusinessId)} -->
 		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
+		{#if isSearched && customers.length == 0}
+			<div class="text-3xl flex justify-center pt-20 text-slate-400">No results found!</div>
+			<div class="text-lg flex justify-center pt-2 text-slate-400">Press the "reset button".</div>
+		{:else if !isSearched&&customers.length==0}
+		<div class="text-xl flex justify-center pt-20 text-slate-400">Press the "Search button",</div>
+			<div class="text-xl flex justify-center pt-2 text-slate-400">to get results for {search}.</div>
+			{/if}
 	{/if}
 {/if}

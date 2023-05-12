@@ -30,9 +30,9 @@
 		{/each}
 	{/if}
 </div>
-<div class="flex justify-center pt-20">
+<div class="flex justify-center pt-5">
 	<ul class="border shadow-sm  p-10 mt-5 rounded-lg w-82 ">
-		<li>1. search for customer by name</li>
+		<li>1. Search for customer by name</li>
 		<li>2. Press give loan button</li>
 		<li>3. Create Loan</li>
 	</ul>

@@ -1,18 +1,21 @@
 import {
-    setDoc, doc, deleteDoc, updateDoc
+    setDoc, doc, deleteDoc, updateDoc, limit, query, collection
 } from 'firebase/firestore';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';
 import { uuidv4 } from '@firebase/util';
 import { customersStore, loadingStateStore } from '../../stores';
-import { tablelistenerTemplate } from './fb_universal';
+import { customDocumentTablelistenerTemplate, tablelistenerTemplate } from './fb_universal';
 import { uploadItemImage } from './fb_imageUpload';
+import { updateBusinessClients } from './fb_business';
 
 const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessId, 'customers', customerId)
+const customerCol = (businessId,) => collection(fb_db, 'business', businessId, 'customers')
+
 
 let errorMessage = () => cliq_notify('d', 'Error Occured Try again');
 
-export async function createCustomer(bid, rawfile, gua_RawFile, data) {
+export async function createCustomer(bid, rawfile, gua_RawFile, data, business) {
     let userUrl = await uploadItemImage(rawfile)
     let gua_Url = await uploadItemImage(gua_RawFile)
     data['userUrl'] = userUrl;
@@ -22,7 +25,8 @@ export async function createCustomer(bid, rawfile, gua_RawFile, data) {
     try {
         await setDoc(customerDoc(bid, customerId),
             data
-        ).then((e) => {
+        ).then(async (e) => {
+            await updateBusinessClients(bid, business)
             cliq_notify('s', 'customer created')
             console.log(e);
         })
@@ -62,11 +66,13 @@ export async function deleteCustomer(bid, customerId) {
 }
 
 export async function customerTablelistener(business_id) {
-    loadingStateStore.update((e) => { return { state: 'loading' } })
-    let route = 'business/' + business_id + '/customers'
-    await tablelistenerTemplate(route, business_id, customersStore)
-    loadingStateStore.update((e) => { return { state: 'loading' } })
+    // loadingStateStore.update((e) => { return { state: 'loading' } })
+    // let route = 'business/' + business_id + '/customers'
+    // await tablelistenerTemplate(route, business_id, customersStore)
+    // loadingStateStore.update((e) => { return { state: 'loading' } })
 
+    const conditions = [limit(10)]
+    await customDocumentTablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customersStore)
 }
 
 

@@ -66,12 +66,16 @@ export async function deleteCustomer(bid, customerId) {
 }
 
 export async function customerTablelistener(business_id) {
-    const conditions = [orderBy('name'), limit(10)]
+    const conditions = [
+
+        orderBy('name'),
+    ]
+    //  limit(10)
     await customQuerytablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customersStore)
 }
 
 export async function searchCustomer(business_id, name) {
-    const conditions = [where('name', '>=', name.toUpperCase()),where('name', '<=', name),limit(3)]
+    const conditions = [where('name', '>=', name.toUpperCase()), where('name', '<=', name), limit(3)]
     await customDocumentTablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customerSearchStore)
 
 }

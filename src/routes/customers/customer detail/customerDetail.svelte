@@ -1,17 +1,8 @@
 <script>
 	import Avatar from '../../../components/reuseable/avatar/avatar.svelte';
-	import AvatarName from '../../../components/reuseable/avatar/avatarName.svelte';
-	import ActionBtn from '../../../components/reuseable/buttons/actionBtn.svelte';
-	import AddCstmr from '../../../components/reuseable/customer/addCstmr.svelte';
 	import CtmrDtl from '../../../components/reuseable/customer/ctmrDtl.svelte';
-	import { cliq_notify } from '../../../components/reuseable/notificationsToast/onNotify';
 	import PageTitle from '../../../components/reuseable/title/pageTitle.svelte';
 	import { MoneyFormat } from '../../../functions/func_essential';
-	import {
-		deleteCustomer,
-		updatecustomerImage
-	} from '../../../functions/funcs/firebase/userFuncs/fb_customers';
-	import { businessStore } from '../../../functions/funcs/stores';
 	import GiveLoan from '../../loans/issueLoan/giveLoan/giveLoan.svelte';
 	import ConfirmDelete from './confirmDelete.svelte';
 	import UpdateCustomerImage from './update/updateCustomerImage.svelte';

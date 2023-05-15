@@ -79,6 +79,7 @@
 		<div class="text-xl flex justify-center pt-2 text-slate-400">to get results for {search}.</div>
 	{/if}
 	<LoanList bind:giveLoan bind:customers click={() => (giveLoan = true)} />
+		
 {:else}
 	<div>
 		<Capital />

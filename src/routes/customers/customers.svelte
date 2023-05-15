@@ -21,6 +21,7 @@
 	import CustomerTable from './table/customerTable.svelte';
 	import { cliq_notify } from '../../components/reuseable/notificationsToast/onNotify';
 	import { customerTablelistener } from '../../functions/funcs/firebase/userFuncs/fb_customers';
+	import ErrorMsg from '../../components/reuseable/messages/errorMsg.svelte';
 	let isDetail = false;
 	let userData;
 	function getData(data) {
@@ -35,8 +36,10 @@
 			: []
 		: $customersStore != undefined && $customersStore.value != undefined
 		? $customersStore.value
-		.filter((e)=>{return e.data.name.toLowerCase().includes(search)})
-		.sort((a, b) => b.data.name > a.data.name)
+				.filter((e) => {
+					return e.data.name.toLowerCase().includes(search);
+				})
+				.sort((a, b) => b.data.name > a.data.name)
 		: [];
 
 	$: customers = list;
@@ -101,11 +104,13 @@
 		<!-- {JSON.stringify($businessStore.BusinessId)} -->
 		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
 		{#if isSearched && customers.length == 0}
-			<div class="text-3xl flex justify-center pt-20 text-slate-400">No results found!</div>
-			<div class="text-lg flex justify-center pt-2 text-slate-400">Press the "reset button".</div>
-		{:else if !isSearched&&customers.length==0}
-		<div class="text-xl flex justify-center pt-20 text-slate-400">Press the "Search button",</div>
-			<div class="text-xl flex justify-center pt-2 text-slate-400">to get results for {search}.</div>
-			{/if}
+			<ErrorMsg title={'No results found!'} subdata={'Press the "reset button".'} />
+		{:else if !isSearched && customers.length == 0}
+			<div class="text-xl flex justify-center pt-20 text-slate-400">Press the "Search button",</div>
+			<div class="text-xl flex justify-center pt-2 text-slate-400">
+				to get results for {search}.
+			</div>
+
+		{/if}
 	{/if}
 {/if}

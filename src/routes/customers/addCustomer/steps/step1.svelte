@@ -5,7 +5,11 @@
 </script>
 <div class="mb-10">
     <div class="flex justify-center ">
+        {#if avatar.length==0}
         <Avatar src="" size="30" upload={true} bind:avatar/>
+        {:else}
+        <Avatar src={avatar} size="30" />
+        {/if}
     </div>
     <div class=" flex justify-center pt-1 text-xs">
         {#if avatar==undefined}

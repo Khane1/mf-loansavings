@@ -4,7 +4,7 @@ import {
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 import { fb_db } from '../firebase_init';
 import { uuidv4 } from '@firebase/util';
-import { customerSearchStore, customersStore, loadingStateStore } from '../../stores';
+import { customerAddedStore, customerSearchStore, customersStore, loadingStateStore } from '../../stores';
 import { customDocumentTablelistenerTemplate, customQuerytablelistenerTemplate, tablelistenerTemplate } from './fb_universal';
 import { uploadItemImage } from './fb_imageUpload';
 import { updateBusinessClients } from './fb_business';
@@ -26,7 +26,7 @@ export async function createCustomer(bid, rawfile, gua_RawFile, data, business) 
         await setDoc(customerDoc(bid, customerId),
             data
         ).then(async (e) => {
-            await updateBusinessClients(bid, business)
+            await updateBusinessClients(bid, business.clients + 1)
             cliq_notify('s', 'customer created')
             console.log(e);
         })
@@ -34,8 +34,21 @@ export async function createCustomer(bid, rawfile, gua_RawFile, data, business) 
         errorMessage();
         console.log(error);
     }
-
 }
+export async function updateCustomer(bid, data) {
+    try {
+        await updateDoc(customerDoc(bid, data.customerId),
+            data
+        ).then(async (e) => {
+            cliq_notify('s', 'customer updated')
+        })
+    } catch (error) {
+        errorMessage();
+        console.log(error);
+    }
+}
+
+
 export async function updatecustomerImage(bid, rawfile, gua_RawFile, data) {
     let doc = customerDoc(bid, data.customerId)
     try {
@@ -54,10 +67,10 @@ export async function updatecustomerImage(bid, rawfile, gua_RawFile, data) {
         errorMessage();
     }
 }
-export async function deleteCustomer(bid, customerId) {
+export async function deleteCustomer(business, userData) {
     try {
-
-        await deleteDoc(customerDoc(bid, customerId))
+        await deleteDoc(customerDoc(business.BusinessId, userData.customerId))
+        await updateBusinessClients(business.BusinessId, business.clients - 1)
         cliq_notify('s', 'customer deleted')
     } catch (error) {
         errorMessage();
@@ -67,13 +80,20 @@ export async function deleteCustomer(bid, customerId) {
 
 export async function customerTablelistener(business_id) {
     const conditions = [
-
         orderBy('name'),
+        limit(10),
     ]
-    //  limit(10)
     await customQuerytablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customersStore)
 }
+export async function customerTableNext(business_id, start) {
+    const conditions = [
+        orderBy('name'),
+        limit(10),
+        startAfter(start)
+    ]
+    await customQuerytablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customerAddedStore)
 
+}
 export async function searchCustomer(business_id, name) {
     const conditions = [where('name', '>=', name.toUpperCase()), where('name', '<=', name), limit(3)]
     await customDocumentTablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customerSearchStore)

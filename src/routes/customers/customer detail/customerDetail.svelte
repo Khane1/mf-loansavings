@@ -5,6 +5,7 @@
 	import { MoneyFormat } from '../../../functions/func_essential';
 	import GiveLoan from '../../loans/issueLoan/giveLoan/giveLoan.svelte';
 	import ConfirmDelete from './confirmDelete.svelte';
+	import EditCustomer from './update/editCustomer.svelte';
 	import UpdateCustomerImage from './update/updateCustomerImage.svelte';
 	export let isDetail, userData;
 	$: avatar = undefined;
@@ -53,10 +54,13 @@
 				<CtmrDtl title={'Phone_number'} data={userData.contact} />
 			</div>
 		</div>
+		<div class="pt-10 flex justify-center">
+			<EditCustomer bind:userData />
+		</div>
 	</div>
 	<div class=" px-5 pt-10 space-y-1  border shadow-xl rounded-2xl">
 		<div class="flex justify-center">
-			{#if userData.gua_Url != undefined &&  userData.gua_Url.length > 0}
+			{#if userData.gua_Url != undefined && userData.gua_Url.length > 0}
 				<Avatar src={userData.gua_Url} size={0} />
 			{:else}
 				<UpdateCustomerImage

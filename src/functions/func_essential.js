@@ -66,6 +66,20 @@ export function sortReceipts(savedList) {
     return newList;
 }
 
+export function sortNCheckStore(searchStore, store, search,isSearched) {
+    return isSearched
+        ? searchStore != undefined && searchStore.value != undefined
+            ? searchStore.value.sort((a, b) => b.data.name > a.data.name)
+            : []
+        : store != undefined && store.value != undefined
+            ? store.value
+                .filter((e) => {
+                    return e.data.name.toLowerCase().includes(search);
+                })
+                .sort((a, b) => b.data.name > a.data.name)
+            : [];
+}
+
 ////////////////Time functions///////////////
 /////////////////////////////////////////////
 export function timestampToDateTime(date) {

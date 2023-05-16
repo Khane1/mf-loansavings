@@ -30,9 +30,9 @@ export async function updateCapital(id, cap) {
         console.log(error);
     }
 }
-export async function updateBusinessClients(id, business) {
+export async function updateBusinessClients(id, clients) {
     try {
-        await updateDoc(businessDoc(id), { clients: business.clients + 1 })
+        await updateDoc(businessDoc(id), { clients})
     } catch (error) {
         console.log(error);
     }

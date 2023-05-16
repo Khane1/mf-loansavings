@@ -1,10 +1,17 @@
 <script>
+	import ActionBtn from '../../../components/reuseable/buttons/actionBtn.svelte';
 	import TableRow from '../../../components/reuseable/customer/tables/tableRow.svelte';
+	import Search from '../../../components/reuseable/search/search.svelte';
 	import Table from '../../../components/reuseable/tables/table.svelte';
 	import PageTitle from '../../../components/reuseable/title/pageTitle.svelte';
-	import { screenSizeStore } from '../../../functions/funcs/stores';
+	import { customerTableNext } from '../../../functions/funcs/firebase/userFuncs/fb_customers';
+	import {
+		businessStore,
+		customerAddedStore,
+		screenSizeStore
+	} from '../../../functions/funcs/stores';
 
-	export let list, customers, isDetail, userData;
+	export let list, customers, isDetail, userData, search;
 </script>
 
 <div>
@@ -32,18 +39,30 @@
 				{#each customers as customer, i}
 					{#if customer.data != undefined}
 						<div class="mt-2" />
-						<TableRow bind:data={customer.data} bind:isDetail bind:userData index={i+1}/>
+						<TableRow bind:data={customer.data} bind:isDetail bind:userData />
 					{/if}
 				{/each}
 			{/if}
-			<!-- {/each} -->
 		</Table>
 	{/if}
 </div>
-<div class="flex justify-center">
-    <div class="text-xs py-10 text-slate-500">
-        <div>We display a max of 10 clients. If you want to find  </div>
-        <div>a specific client, please use the search feature.</div>
-    </div>
+<div class="flex justify-center pt-5">
+	{#if customers.length == $businessStore.clients || customers.length == 0 || $businessStore.clients <= 10 || search.length > 0}
+		<div />
+	{:else if customers.length == 30}
+		<div class="flex justify-center">
+			<div class="text-xs py-10 text-slate-500">
+				<div>We load a max of 30 clients. If you want to find</div>
+				<div>a specific client, please use the search feature.</div>
+			</div>
+			<div />
+		</div>
+	{:else}
+		<ActionBtn
+			click={() => {
+				customerTableNext($businessStore.BusinessId, customers[customers.length - 1].data.name);
+			}}
+			title={'See more clients ↓'}
+		/>{/if}
 </div>
-
+<div />

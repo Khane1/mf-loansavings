@@ -14,7 +14,7 @@
 	nextFunc={() => {}}
 	close={() => (formNo = 1)}
 	action={() => {
-		deleteCustomer($businessStore.BusinessId, userData.customerId);
+		deleteCustomer($businessStore, userData);
 	}}
 >
 	<div>

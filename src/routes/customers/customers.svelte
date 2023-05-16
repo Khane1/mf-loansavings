@@ -11,38 +11,43 @@
 	import {
 		businessStore,
 		capitalStore,
+		customerAddedStore,
 		customerSearchStore,
 		customersStore,
 		screenSizeStore
 	} from '../../functions/funcs/stores';
 	import AddCustomer from './addCustomer/addCustomer.svelte';
 	import CustomerDetail from './customer detail/customerDetail.svelte';
-	import { sortCustomers } from '../../functions/func_essential';
+	import { sortCustomers, sortNCheckStore } from '../../functions/func_essential';
 	import CustomerTable from './table/customerTable.svelte';
 	import { cliq_notify } from '../../components/reuseable/notificationsToast/onNotify';
 	import { customerTablelistener } from '../../functions/funcs/firebase/userFuncs/fb_customers';
 	import ErrorMsg from '../../components/reuseable/messages/errorMsg.svelte';
 	let isDetail = false;
 	let userData;
-	function getData(data) {
-		alert('hii');
-		userData = data;
-	}
-	onMount((e) => {});
 	$: isSearched = false;
-	$: list = isSearched
-		? $customerSearchStore != undefined && $customerSearchStore.value != undefined
-			? $customerSearchStore.value.sort((a, b) => b.data.name > a.data.name)
-			: []
-		: $customersStore != undefined && $customersStore.value != undefined
-		? $customersStore.value
-				.filter((e) => {
-					return e.data.name.toLowerCase().includes(search);
-				})
-				.sort((a, b) => b.data.name > a.data.name)
-		: [];
-
-	$: customers = list;
+	$: customersAdded = sortNCheckStore(
+		$customerSearchStore,
+		$customerAddedStore,
+		search,
+		isSearched
+	);
+	$: list = sortNCheckStore($customerSearchStore, $customersStore, search, isSearched);
+	function added(customersAdded) {
+		customersAdded.forEach((element) => {
+			let check = list.filter(({ data }) => {
+				return data.customerId == element.data.customerId;
+			});
+			if (check.length == 0) {
+				list = [...list, element];
+				customersStore.update((e) => {
+					return { value: list, businessId: $businessStore.business_id };
+				});
+			}
+		});
+		return list;
+	}
+	$: customers = customersAdded.length > 0 ? added(customersAdded) : list;
 	$: search = '';
 	function searchFunction() {
 		if (!isSearched || (isSearched && customers.length == 0)) {
@@ -55,6 +60,7 @@
 			customerTablelistener($businessStore.BusinessId), (isSearched = false);
 		}
 	}
+	onMount((e) => {});
 </script>
 
 {#if $screenSizeStore.size < 1000}
@@ -70,7 +76,7 @@
 {/if}
 {#if $screenSizeStore.size > 1000}
 	{#if isDetail}
-		<CustomerDetail bind:isDetail bind:userData />
+		<CustomerDetail bind:isDetail bind:userData bind:search />
 	{:else}
 		<div class="flex justify-between">
 			<PageTitle title="Customers 😊" />
@@ -102,7 +108,7 @@
 
 		<div class="pt-5" />
 		<!-- {JSON.stringify($businessStore.BusinessId)} -->
-		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
+		<CustomerTable bind:list bind:customers bind:isDetail bind:userData  bind:search/>
 		{#if isSearched && customers.length == 0}
 			<ErrorMsg title={'No results found!'} subdata={'Press the "reset button".'} />
 		{:else if !isSearched && customers.length == 0}
@@ -110,7 +116,6 @@
 			<div class="text-xl flex justify-center pt-2 text-slate-400">
 				to get results for {search}.
 			</div>
-
 		{/if}
 	{/if}
 {/if}

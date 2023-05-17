@@ -206,7 +206,7 @@
 					</div>
 				</div>
 				<div>
-					<GlTitle title={'When did you issue this Loan?'} />
+					<GlTitle title={'When will this loan expire?'} />
 					<div class="">
 						<!-- {new Date().toDateString()} -->
 						<input type="date" bind:value={loan_due} min={convertCustomDate4InputMin(loan_start)} />

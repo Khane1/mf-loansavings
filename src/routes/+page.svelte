@@ -53,7 +53,7 @@
 				if ($userAuthStore.name == undefined && $authstatusStore.code == 'authorized') {
 					userAuthStore.update((e) => JSON.parse($userAuthStore));
 				}
-				refresh($userAuthStore.businessId);
+				refresh($userAuthStore.businessId,$screenSizeStore.size);
 			}
 		}
 	});

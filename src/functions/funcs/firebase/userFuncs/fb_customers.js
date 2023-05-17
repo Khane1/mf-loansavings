@@ -78,9 +78,9 @@ export async function deleteCustomer(business, userData) {
     }
 }
 
-export async function customerTablelistener(business_id) {
+export async function customerTablelistener(business_id, size) {
     const conditions = [
-        orderBy('name'),
+        size < 700 ? orderBy('date') : orderBy('name'),
         limit(10),
     ]
     await customQuerytablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customersStore)

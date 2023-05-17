@@ -1,4 +1,6 @@
 <script>
+	import { screenSizeStore } from '../../../functions/funcs/stores';
+
 	export let headers;
 </script>
 
@@ -10,7 +12,12 @@
 					<thead class="border-b">
 						<tr>
 							{#each headers as header}
-								<th scope="col" class="text-sm font-medium px-6 py-3 text-left">
+								<th
+									scope="col"
+									class={$screenSizeStore.size < 500
+										? 'text-xs font-medium px-4 py-3 text-left'
+										: 'text-sm font-medium px-6 py-3 text-left'}
+								>
 									{header}
 								</th>
 							{/each}

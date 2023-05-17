@@ -10,15 +10,15 @@
 	style="cursor: pointer;"
 	on:click={() => ((userData = data), (isDetail = true))}
 >
-	{#if $screenSizeStore.size < 1000}
-		<td class="px-6 py-2  text-sm font-medium text-gray-900whitespace-nowrap">{data.name} </td>
+	{#if $screenSizeStore.size < 500}
+		<td class="px-4 py-2 w-5  text-xs font-medium text-gray-900">{data.name} </td>
 
-		<td class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
-			{data.completed}
+		<td class="text-xs text-gray-900 font-light px-4 py-2 whitespace-nowrap">
+			{timestampToDateTime(data.opened)}
 			<!-- {MoneyFormat(item.total)} -->
 		</td>
-		<td class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
-			{data.paid}
+		<td class="text-xs text-gray-900 font-light px-4 py-2 whitespace-nowrap">
+			{data.contact}
 			<!-- {MoneyFormat(item.total)} -->
 		</td>
 	{:else}

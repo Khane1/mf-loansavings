@@ -11,12 +11,21 @@
 		screenSizeStore
 	} from '../../../functions/funcs/stores';
 
-	export let list, customers, isDetail, userData, search;
+	export let list,
+		customers,
+		isDetail,
+		userData,
+		search = '';
 </script>
 
 <div>
 	{#if $screenSizeStore.size < 768}
-		<Table headers={['Name', 'Completed', 'Total paid']}>
+	
+	<div class="flex justify-between border py-2 px-2">
+		<span class="text-xs">Showing: {customers.length} Clients</span>
+		<div class="text-xs">Total: {$businessStore.clients} Clients</div>
+	</div>
+		<Table headers={['Name', 'Opened', 'Contact']}>
 			<!-- {#each  $historyDataStore as item} -->
 			<div class="hover:text-lg my-3" />
 			{#if list != undefined}

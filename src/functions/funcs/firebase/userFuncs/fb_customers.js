@@ -94,7 +94,8 @@ export async function customerTableNext(business_id, start) {
     await customQuerytablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customerAddedStore)
 
 }
-export async function searchCustomer(business_id, name) {
+export async function searchCustomer(business_id, nameSearched) {
+    let name = nameSearched.charAt(0).toUpperCase() + nameSearched.slice(1).toLowerCase()
     const conditions = [where('name', '>=', name.toUpperCase()), where('name', '<=', name), limit(3)]
     await customDocumentTablelistenerTemplate(query(customerCol(business_id), ...conditions), business_id, customerSearchStore)
 

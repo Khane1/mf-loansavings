@@ -1,21 +1,20 @@
 import {
-    setDoc, doc, updateDoc, where, query, collection, or, onSnapshot, limit
+    setDoc, doc, updateDoc, where, query, collection, or, onSnapshot, limit, deleteDoc, getDoc, getDocs
 } from 'firebase/firestore';
-import { uuidv4 } from '@firebase/util';
 import { fb_db } from '../firebase_init';
-import { customDocumentTablelistenerTemplate, customQuerytablelistenerTemplate, tablelistenerTemplate } from './fb_universal';
+import { customDocumentTablelistenerTemplate, } from './fb_universal';
 import { loanStore } from '../../stores';
 import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
 const loanDoc = (businessId, loanId) => doc(fb_db, 'business', businessId, 'loans', loanId)
 const loanCol = (businessId,) => collection(fb_db, 'business', businessId, 'loans')
+import { uuidv4 } from '@firebase/util';
 
 const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessId, 'customers', customerId)
 import { updateCapital } from './fb_business'
-import { customDate, dateTransfer, getDateToday, getFirstDayOfMonth, getcustomDayOfMonth } from '../../../func_essential';
+import { dateDiffInDays, dateTransfer, getcustomDayOfMonth, timestampToDateTime } from '../../../func_essential';
 
-export async function createLoan(business, customerId, isNewLoan, data) {
+export async function createLoan(business, customerId, isNewLoan, data, loanId) {
     try {
-        let loanId = uuidv4()
         let capital = (business.capital + data['Opening_Fee']) - data['Loan'];
         console.log(business.BusinessId, loanId, data);
         data['loanId'] = loanId;
@@ -49,7 +48,7 @@ export async function getLoans(bid) {
     const yesterday = getcustomDayOfMonth(
         date.getFullYear(),
         date.getMonth(),
-        date.getDate() )
+        date.getDate())
     const conditions = [where('status', '==', 'active'),]
     const condition2 = [where('status', '==', 'complete'), where('lastpaid', '>=', yesterday),]
 
@@ -58,6 +57,7 @@ export async function getLoans(bid) {
 
         if (activeRes.docs.length != 0) {
             activeRes.docs.forEach((val) => {
+                checkLoanStatus(bid, val.data())
                 if (list.filter(e => e.customerId === val.id).length == 0) {
                     list = [...list, { data: val.data(), customer_id: val.id }]
                 } else {
@@ -82,13 +82,77 @@ export async function getLoans(bid) {
     })
 
 }
+export async function deleteLoan(business, loanData) {
+    try {
+        // await deleteDoc(loanDoc(business.BusinessId, loanData.loanId))
+        const conditions = [where('borrower', '==', loanData.borrower), where('status', '==', 'active'), where('balance', '>', 0)]
+        let ifLoansExist = await getDocs(query(loanCol(business.BusinessId), ...conditions))
+        if (ifLoansExist.docs.length > 1) {
+            await deleteDoc(loanDoc(business.BusinessId, loanData.loanId)).then((e) => {
+                cliq_notify('s', 'Deleted')
+            })
+        } else {
+            let confirmDelete = prompt("This is the only active loan under " + loanData.borrower + '\'s name. Are you sure you want delete the loan, type "Confirm" if yes. To exit close this prompt.', "");
+            switch (confirmDelete) {
+                case "Confirm":
+                    await deleteDoc(loanDoc(business.BusinessId, loanData.loanId)).then((e) => {
+                        cliq_notify('s', 'Deleted')
+                    })
+                    break;
+                default:
+                    alert('I didn\'t get that, please try again.')
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+async function checkLoanStatus(bid, loan) {
+    if (dateDiffInDays(new Date(), loan.loan_due.toDate()) <= 0) {
+        let newLoan = convertToNewLoan(loan);
+        loan['status'] = 'CarryOver'
+        loan['CarryOverID'] = newLoan.loanId
+        await updateDoc(loanDoc(bid, loan.loanId), loan)
+        await setDoc(loanDoc(bid, newLoan.loanId), newLoan)
+    }
+}
 
 export async function getLoansByDate(bid, from, to) {
     const conditions = [where('date', '>=', new Date(from)), where('date', '<=', new Date(dateTransfer(to),))]
     await customDocumentTablelistenerTemplate(query(loanCol(bid), ...conditions), bid, loanStore)
 }
 
-// 1. Check if expiry is == today and balance >0
-// 2. If true then change status to expired
-// 3. then create new debt with amount= balance * 20%
-// 4. 
+
+function convertToNewLoan(loan) {
+    let loanId = uuidv4();
+    let loan_due = convertTimeAndIncrement(loan.loan_due, true)
+    let interest = parseInt(loan.interest) / parseInt(loan.Loan) * parseInt(loan.balance)
+    let loan_date_iss = convertTimeAndIncrement(loan.loan_due, false);
+    return {
+        borrower: loan.borrower,
+        customerId: loan.customerId,
+        Loan: loan.balance,
+        toBePaid: loan.balance,
+        lastpaid: '',
+        balance: 0,
+        collateral: loan.collateral,
+        interest: interest,
+        loan_term: dateDiffInDays(loan_date_iss, loan_due),
+        Opening_Fee: 0,
+        type: 'CarryOver',
+        loan_date_iss: convertTimeAndIncrement(loan.loan_due, false),
+        loan_due,
+        date: new Date(),
+        loan_date_iss,
+        userUrl: loan.userUrl,
+        status: 'active',
+        newLoan: loan.newLoan,
+        loanId: loanId
+
+    }
+}
+function convertTimeAndIncrement(date, incre) {
+    let dateTime = new Date(date.toDate())
+    let newDate = getcustomDayOfMonth(dateTime.getFullYear(), + incre ? parseInt(dateTime.getMonth() + 1) : dateTime.getMonth(), dateTime.getDate())
+    return newDate
+}

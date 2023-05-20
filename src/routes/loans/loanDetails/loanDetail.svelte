@@ -11,6 +11,7 @@
 		timestampToDateTime
 	} from '../../../functions/func_essential';
 	import { stringify } from 'postcss';
+	import DeleteLoan from './deleteLoan.svelte';
 	export let isDetail, loanData;
 </script>
 
@@ -18,8 +19,9 @@
 	<div on:click={() => (isDetail = false)} on:keypress style="cursor:pointer">
 		<PageTitle title={'← Loan Details'} />
 	</div>
-	<div class="pr-10">
+	<div class="pr-10 flex space-x-2">
 		<PageTitle title={loanData.borrower} />
+		<DeleteLoan bind:loanData/>
 	</div>
 </div>
 
@@ -66,24 +68,29 @@
 					? "Hasn't yet paid"
 					: timestampToDateTime(loanData.lastpaid)}
 			/>
+
 		</div>
 	</div>
 </div>
 
 <div class="flex justify-evenly">
 	<div class="pt-20">
-		<div class="text-slate-400 text-xs  font-light">Details</div>
+		<div class="text-slate-400 text-xs  font-light">General Loan Details</div>
 
 		<Detaildata title="Interest" data={calculateInterest(loanData.interest, loanData.Loan) + '%'} />
 		<Detaildata title="Opening_Fee" data={MoneyFormat(loanData.Opening_Fee)} />
-		<Detaildata title="Type" data={loanData.type} />
 		<Detaildata title="status" data={loanData.status} />
 		<Detaildata title="Profit" data={MoneyFormat(loanData.interest)} />
 	</div>
 	<div class="pt-20">
-		<div />
+		<div class="text-slate-400 text-xs  font-light">Loan Time Details</div>
+
 		<Detaildata title="Loan_term" data={loanData.loan_term + ' days'} />
 		<Detaildata title="Date_Issued" data={timestampToDateTime(loanData.loan_date_iss)} />
+		<Detaildata
+			title="Expires_on"
+			data={timestampToDateTime(loanData.loan_due)}
+		/>
 		<Detaildata
 			title="Time_left"
 			data={JSON.stringify(dateDiffInDays(new Date(), loanData.loan_due.toDate())) + ' days'}
@@ -95,8 +102,18 @@
 		>
 			Deadline expiry
 		</span>
-		<Detaildata title="Security" data={loanData.collateral} />
+	
+		<div class="mt-6 space-x-20 flex">
+			<!-- <div class=" mt-2 text-sm">Profit</div> -->
+			<!-- <ActionBtn title={'See Transaction History ❒'} /> -->
+		</div>
+	</div>
+	<div class="pt-20">
+		<div class="text-slate-400 text-xs  font-light">_</div>
+
 		<Detaildata title="Created_On" data={timestampToDateTime(loanData.date)} />
+		<Detaildata title="Security" data={loanData.collateral} />
+		<Detaildata title="Type" data={loanData.type} />
 
 		<div class="mt-6 space-x-20 flex">
 			<!-- <div class=" mt-2 text-sm">Profit</div> -->

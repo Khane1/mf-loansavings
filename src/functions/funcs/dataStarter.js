@@ -10,12 +10,12 @@ import { businessStore } from "./stores";
 export function refresh(bid,size) {
     checkIfSignedIn().then((e) => {
         if (e != null) {
-            // customerTablelistener(bid,size);
+            customerTablelistener(bid,size);
             businessCapitallistener(bid)
             getLoans(bid);
-            // getReceipts(bid);
-            // getTeam(bid);
-            // getReports(bid)
+            getReceipts(bid);
+            getTeam(bid);
+            getReports(bid)
         }
     });
 }

@@ -7,6 +7,7 @@ import { getDownloadURL, getStorage, ref, uploadString } from "firebase/storage"
 // import { userModelStore, userStore } from '../stores';
 async function appInit() {
     let res = await axiosGetRoute({}, '/api/getsecrets', {});
+    console.log(res);
     return res.data.secrets;
 }
 export const appLoad = async () => {

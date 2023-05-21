@@ -114,14 +114,14 @@
 					on:click={() => {
 						console.log();
 						if (
-							$loanStore.value.filter((e) => e.customer_id === receipt.data.borrowerId).length == 0
+							$loanStore.value.filter((e) => e.data.customerId == receipt.data.borrowerId).length == 0
 						) {
 							cliq_notify('w', "We can't find more data on this loan.");
 						} else {
 							loanData =
 								$loanStore.value == undefined
 									? {}
-									: $loanStore.value.filter((e) => e.customer_id === receipt.data.borrowerId)[0]
+									: $loanStore.value.filter((e) => e.data.customerId === receipt.data.borrowerId)[0]
 											.data;
 							loanDetail = true;
 						}

@@ -7,10 +7,10 @@ import { getReceipts } from "./firebase/userFuncs/fb_receipts";
 import { getTeam } from "./firebase/userFuncs/fb_team";
 import { businessStore } from "./stores";
 
-export function refresh(bid,size) {
+export function refresh(bid, size) {
     checkIfSignedIn().then((e) => {
         if (e != null) {
-            customerTablelistener(bid,size);
+            customerTablelistener(bid, size);
             businessCapitallistener(bid)
             getLoans(bid);
             getReceipts(bid);

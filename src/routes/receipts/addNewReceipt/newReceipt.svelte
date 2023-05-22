@@ -8,20 +8,27 @@
 	import LoanList from '../../loans/issueLoan/borrowerList/loanList.svelte';
 	import CustLoanList from './custLoanList.svelte';
 	export let addReceipt;
+	let search = '';
 </script>
 
 <div class="flex justify-between">
 	<div class=" flex justify">
-		<div style="cursor: pointer" on:keypress on:click={() => (addReceipt = false) } >
+		<div style="cursor: pointer" on:keypress on:click={() => (addReceipt = false)}>
 			<PageTitle title="← New Receipt" />
 		</div>
 	</div>
 	<div class=" flex justify-start">
 		<div class="w-30">
-			<Input placeholder="Search for customer" keydown={() => {}} isText={true} type="text" />
+			<Input
+				bind:value={search}
+				placeholder="Search for customer"
+				keydown={() => {}}
+				isText={true}
+				type="text"
+			/>
 		</div>
 		<ActionBtn click={true} title={'GO'} />
 	</div>
 </div>
 <div class="pt-5" />
-<CustLoanList />
+<CustLoanList bind:search />

@@ -20,8 +20,8 @@
 	<div class="flex justify-evenly">
 		{#if userData.status == 'inactive'}
 			<ConfirmDelete bind:userData />
+			<GiveLoan data={userData} />
 		{/if}
-		<GiveLoan data={userData} />
 	</div>
 </div>
 <div class="flex justify-evenly pt-10">

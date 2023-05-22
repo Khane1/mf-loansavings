@@ -1,6 +1,6 @@
 import {
     setDoc, doc, collection,
-    query, where, updateDoc,
+    query, where, updateDoc, getDoc,
 } from 'firebase/firestore';
 import { uuidv4 } from '@firebase/util';
 import { fb_db } from '../firebase_init';
@@ -15,7 +15,7 @@ const receiptCol = (businessId) => collection(fb_db, 'business', businessId, 're
 const loanDoc = (businessId, loan_Id) => doc(fb_db, 'business', businessId, 'loans', loan_Id)
 const customerDoc = (businessId, customerId) => doc(fb_db, 'business', businessId, 'customers', customerId)
 
-export async function createReceipt(business, data, balance, loan, userData) {
+export async function createReceipt(business, data, balance, loan,) {
     let receiptId = uuidv4()
     let capital = business.capital + data['amount'];
     console.log(business.BusinessId, receiptId, data);
@@ -29,9 +29,10 @@ export async function createReceipt(business, data, balance, loan, userData) {
         await updateCapital(business.BusinessId, capital);
 
         if (balance <= 0) {
+            let customer = (await getDoc(customerDoc(business.BusinessId, loan.customerId))).data()
             await updateDoc(customerDoc(business.BusinessId, loan.customerId), {
-                status: 'inactive', completed: parseInt(userData[0].data.completed) + 1,
-                paid: parseInt(loan.Loan) + parseInt(userData[0].data.paid)
+                status: 'inactive', completed: parseInt(customer.completed) + 1,
+                paid: parseInt(loan.Loan) + parseInt(customer.paid)
             })
             await updateDoc(loanDoc(business.BusinessId, loan.loanId), {
                 balance: balance,
@@ -46,10 +47,6 @@ export async function createReceipt(business, data, balance, loan, userData) {
             cliq_notify('s', 'Receipt Saved')
 
         }
-
-        // .then((e) => {
-        //     console.log(e);
-        // })
     } catch (error) {
         console.log(error);
         cliq_notify('d', 'Error Occured Try again')

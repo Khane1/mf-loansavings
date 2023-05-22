@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { handleCors } from '../../hooks';
-let baseUrl ='https://sore-pear-dog-hat.cyclic.app';
+let baseUrl = 'https://sore-pear-dog-hat.cyclic.app';
 
 export async function checkAuth(idToken) {
     return await axiosGetRoute({}, '/', { 'AuthToken': idToken })
@@ -16,6 +16,7 @@ export async function axiosGetRoute(params, url, headers) {
     } catch (error) {
         console.log(error)
     }
+  
 }
 
 export async function axiosPostRoute(params, url) {
@@ -23,7 +24,6 @@ export async function axiosPostRoute(params, url) {
         const res = await axios.post(baseUrl + url, {
             params: params
         });
-        console.log(res);
         return res;
     } catch (error) {
         console.log(error)

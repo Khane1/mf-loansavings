@@ -134,7 +134,7 @@ function convertToNewLoan(loan) {
         Loan: loan.balance,
         toBePaid: loan.balance,
         lastpaid: '',
-        balance: 0,
+        balance: loan.balance,
         collateral: loan.collateral,
         interest: interest,
         loan_term: dateDiffInDays(loan_date_iss, loan_due),

@@ -25,9 +25,6 @@
 	$: toBePaid = parseInt(interest) + parseInt(amount);
 	$: newBalance = loanData.balance - amount;
 	export let loanData;
-	$: userData = $customersStore.value.filter((e) =>
-		e.customer_id.toLowerCase().includes(loanData.customerId)
-	);
 </script>
 
 <!-- Borrower	Amount	Agent	Balance	Days left	Last paid -->
@@ -57,7 +54,6 @@
 				},
 				newBalance,
 				loanData,
-				userData
 			);
 		} else {
 			cliq_notify('d', "You can't deposit more than the required amount. ");

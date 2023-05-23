@@ -95,7 +95,10 @@ export async function deleteLoan(business, loanData) {
             let confirmDelete = prompt("This is the only active loan under " + loanData.borrower + '\'s name. Are you sure you want delete the loan, type "Confirm" if yes. To exit close this prompt.', "");
             switch (confirmDelete) {
                 case "Confirm":
-                    await deleteDoc(loanDoc(business.BusinessId, loanData.loanId)).then((e) => {
+                    await deleteDoc(loanDoc(business.BusinessId, loanData.loanId)).then(async (e) => {
+                        await updateDoc(customerDoc(business.BusinessId, loanData.customerId), {
+                            status: 'inactive'
+                        })
                         cliq_notify('s', 'Deleted')
                     })
                     break;
@@ -107,13 +110,15 @@ export async function deleteLoan(business, loanData) {
         console.log(error);
     }
 }
+let completelist = []
 async function checkLoanStatus(bid, loan) {
-    if (dateDiffInDays(new Date(), loan.loan_due.toDate()) <= 0) {
+    if (dateDiffInDays(new Date(), loan.loan_due.toDate()) <= 0 && !completelist.includes(loan.customerId)) {
         let newLoan = convertToNewLoan(loan);
         loan['status'] = 'CarryOver'
         loan['CarryOverID'] = newLoan.loanId
         await updateDoc(loanDoc(bid, loan.loanId), loan)
         await setDoc(loanDoc(bid, newLoan.loanId), newLoan)
+        completelist = [...completelist, loan.customerId]
     }
 }
 
@@ -132,9 +137,9 @@ function convertToNewLoan(loan) {
         borrower: loan.borrower,
         customerId: loan.customerId,
         Loan: loan.balance,
-        toBePaid: loan.balance,
+        toBePaid: loan.balance + interest,
         lastpaid: '',
-        balance: loan.balance,
+        balance: loan.balance + interest,
         collateral: loan.collateral,
         interest: interest,
         loan_term: dateDiffInDays(loan_date_iss, loan_due),

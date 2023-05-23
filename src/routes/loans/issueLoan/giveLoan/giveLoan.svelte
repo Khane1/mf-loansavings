@@ -1,5 +1,5 @@
 <script>
-	import { dataset_dev } from 'svelte/internal';
+	import { dataset_dev, onMount } from 'svelte/internal';
 	import AddCstmr from '../../../../components/reuseable/customer/addCstmr.svelte';
 	import Input from '../../../../components/reuseable/input/input.svelte';
 	import GlTitle from '../../../../components/reuseable/loan/giveLoan/gl_title.svelte';
@@ -70,32 +70,32 @@
 			cliq_notify('d', 'This customer has an active loan.');
 		} else if ((capital >= amount && amount > 0) || !isNewLoan) {
 			if (balance <= toBePaid) {
-				createLoan(
-					$businessStore,
-					c_id,
-					isNewLoan,
-					{
-						borrower: data.name,
-						customerId: c_id,
-						Loan: amount,
-						toBePaid,
-						lastpaid: isNewLoan ? '' : isComplete ? new Date(loan_due) : new Date(lastpaid),
-						balance: isNewLoan ? toBePaid : isComplete ? 0 : balance,
-						collateral,
-						interest,
-						loan_term,
-						Opening_Fee: openingFee,
-						type: 'original',
-						interest,
-						loan_date_iss,
-						loan_due: new Date(loan_due),
-						date: new Date(),
-						userUrl: data.userUrl ?? '',
-						status: isComplete ? 'complete' : 'active',
-						newLoan: isNewLoan
-					},
-					loanId
-				);
+					createLoan(
+						$businessStore,
+						c_id,
+						isNewLoan,
+						{
+							borrower: data.name,
+							customerId: c_id,
+							Loan: amount,
+							toBePaid,
+							lastpaid: isNewLoan ? '' : isComplete ? new Date(loan_due) : new Date(lastpaid),
+							balance: isNewLoan ? toBePaid : isComplete ? 0 : balance,
+							collateral,
+							interest,
+							loan_term,
+							Opening_Fee: openingFee,
+							type: 'original',
+							interest,
+							loan_date_iss,
+							loan_due: new Date(loan_due),
+							date: new Date(),
+							userUrl: data.userUrl ?? '',
+							status: isComplete ? 'complete' : 'active',
+							newLoan: isNewLoan
+						},
+						loanId
+					);
 			} else {
 				cliq_notify('d', 'Balance should be less than Loan');
 			}
@@ -107,8 +107,7 @@
 			);
 		}
 	}}
->
-{new Date().get}
+	>
 	<div class="space-y-5">
 		{#if formNo == 1}
 			<div class="">

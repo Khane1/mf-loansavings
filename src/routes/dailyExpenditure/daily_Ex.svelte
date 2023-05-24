@@ -102,11 +102,9 @@
 		return Ids;
 	};
 	$: T_No_Inactive = JSON.stringify(
-		$customersStore != undefined &&
-			$customersStore.value != undefined &&
 			$loanStore != undefined &&
 			$loanStore.value != undefined
-			? $customersStore.value.length - $loanStore.value.length
+			? $businessStore.clients - $loanStore.value.length
 			: 0
 	);
 	$: T_No_LoansToday =
@@ -114,7 +112,6 @@
 	$: newLoans = loansToday.length;
 	$: T_No_cus_Paid = JSON.stringify(getCustomersPaid().length);
 </script>
-
 <span class="text-sm"> Capital/Expenditure </span>
 <div class="flex justify-between">
 	<PageTitle title="Daily Report" />

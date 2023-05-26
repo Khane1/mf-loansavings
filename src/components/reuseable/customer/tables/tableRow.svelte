@@ -3,8 +3,8 @@
 	import { screenSizeStore } from '../../../../functions/funcs/stores';
 
 	export let data, isDetail, userData;
-</script>
 
+</script>
 <tr
 	class=" bg-slate-50 space-y-4"
 	style="cursor: pointer;"

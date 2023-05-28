@@ -76,7 +76,7 @@
 {/if}
 {#if $screenSizeStore.size > 1000}
 	{#if isDetail}
-		<CustomerDetail bind:isDetail bind:user={userData} bind:search />
+		<CustomerDetail bind:isDetail bind:customers bind:user={userData} bind:search />
 	{:else}
 		<div class="flex justify-between">
 			<PageTitle title="Customers 😊" />

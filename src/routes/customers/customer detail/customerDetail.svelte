@@ -9,8 +9,8 @@
 	import ConfirmDelete from './confirmDelete.svelte';
 	import EditCustomer from './update/editCustomer.svelte';
 	import UpdateCustomerImage from './update/updateCustomerImage.svelte';
-	export let isDetail, user;
-	$: customer = $customersStore.value.filter(({ data }) => {
+	export let isDetail, user,customers;
+	$: customer = customers.filter(({ data }) => {
 		return data.customerId == user.customerId;
 	});
 	$: userData =
@@ -21,6 +21,7 @@
 			? customer[0].data
 			: undefined;
 	$: avatar = undefined;
+	
 	$: gua_avatar = userData?.gua_avatar;
 </script>
 

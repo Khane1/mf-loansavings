@@ -66,7 +66,7 @@ export function sortReceipts(savedList) {
     return newList;
 }
 
-export function sortNCheckStore(searchStore, store, search,isSearched) {
+export function sortNCheckStore(searchStore, store, search, isSearched) {
     return isSearched
         ? searchStore != undefined && searchStore.value != undefined
             ? searchStore.value.sort((a, b) => b.data.name > a.data.name)
@@ -100,20 +100,13 @@ export function dateTransfer(date) {
     var dd = String(today.getDate()).padStart(2, "0");
     var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
     var yyyy = today.getFullYear();
-
-    // today = yyyy + "/" + mm + "/" + dd;
-    return yyyy + '-' + mm + '-' + (parseInt(dd) + 1);
+    let newDate = (parseInt(dd) + 1)
+    let feb28OrLastDay = (mm == 2 && dd == 28) || newDate > 30
+    return yyyy + '-' + (feb28OrLastDay ? parseInt(mm) + 1 : mm) + '-' + (feb28OrLastDay ? 1 : newDate);
 }
 export function customDate(date) {
-    var today = new Date(date);
-    var dd = String(today.getDate()).padStart(2, "0");
-    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-    var yyyy = today.getFullYear();
-
-    // today = yyyy + "/" + mm + "/" + dd;
-    return yyyy + '-' + mm + '-' + (parseInt(dd) + 1);
+    return dateTransfer(date)
 }
-
 
 export function convertDate4InputMin() {
     const offset = new Date().getTimezoneOffset()

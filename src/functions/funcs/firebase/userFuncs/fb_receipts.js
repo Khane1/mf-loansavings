@@ -55,6 +55,8 @@ export async function createReceipt(business, data, balance, loan,) {
 }
 
 export async function getReceipts(bid) {
+    console.log(getDateToday().today);
+    console.log(dateTransfer(new Date()));
     const conditions = [where('last_paid', '>=', new Date(getDateToday().today)), where('last_paid', '<=', new Date(dateTransfer(new Date())))]
     await customQuerytablelistenerTemplate(query(receiptCol(bid), ...conditions), bid, receiptStore)
 }

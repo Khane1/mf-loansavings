@@ -64,19 +64,24 @@
 </script>
 
 {#if $screenSizeStore.size < 1000}
-	<div class="flex justify-between">
-		<div class="mb-5 pl-2">
-			<PageTitle title="Customers" />
+	{#if isDetail}
+		<CustomerDetail bind:isDetail bind:customers bind:user={userData} />
+	{:else}
+		<div class="flex justify-between">
+			<div class="mb-5 pl-2">
+				<PageTitle title="Customers" />
+			</div>
+			<AddCustomer />
 		</div>
-		<AddCustomer />
-	</div>
-	<div>
-		<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
-	</div>
+		<div>
+			<CustomerTable bind:list bind:customers bind:isDetail bind:userData />
+		</div>
+	{/if}
 {/if}
+
 {#if $screenSizeStore.size > 1000}
 	{#if isDetail}
-		<CustomerDetail bind:isDetail bind:customers bind:user={userData} bind:search />
+		<CustomerDetail bind:isDetail bind:customers bind:user={userData} />
 	{:else}
 		<div class="flex justify-between">
 			<PageTitle title="Customers 😊" />
@@ -108,7 +113,7 @@
 
 		<div class="pt-5" />
 		<!-- {JSON.stringify($businessStore.BusinessId)} -->
-		<CustomerTable bind:list bind:customers bind:isDetail bind:userData  bind:search/>
+		<CustomerTable bind:list bind:customers bind:isDetail bind:userData bind:search />
 		{#if isSearched && customers.length == 0}
 			<ErrorMsg title={'No results found!'} subdata={'Press the "reset button".'} />
 		{:else if !isSearched && customers.length == 0}

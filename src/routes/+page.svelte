@@ -26,7 +26,7 @@
 	import Toast from '../components/reuseable/notificationsToast/toast.svelte';
 	import { refresh } from '../functions/funcs/dataStarter';
 	import { businessCapitallistener } from '../functions/funcs/firebase/userFuncs/fb_business';
-	let y;
+	let y, scroll;
 	$: loggedIn =
 		typeof window != 'undefined' && $authstatusStore != undefined && $authstatusStore.length != 0
 			? $authstatusStore.code == 'authorized'
@@ -46,20 +46,20 @@
 	$: onlineStatus = typeof window != 'undefined' ? navigator.onLine : false;
 	onMount((e) => {
 		screenSizeStore.update((e) => {
-			return { size: y };
+			return { size: y, scroll };
 		});
 		if (loggedIn) {
 			if (typeof window != 'undefined') {
 				if ($userAuthStore.name == undefined && $authstatusStore.code == 'authorized') {
 					userAuthStore.update((e) => JSON.parse($userAuthStore));
 				}
-				refresh($userAuthStore.businessId,$screenSizeStore.size);
+				refresh($userAuthStore.businessId, $screenSizeStore.size);
 			}
 		}
 	});
 </script>
 
-<svelte:window bind:innerWidth={y} />
+<svelte:window bind:innerWidth={y} bind:scrollY={scroll} />
 {#if y > 1000}
 	{loggedIn}
 	{#if loggedIn}
@@ -89,19 +89,16 @@
 	{:else}
 		<OpeningScreen />
 	{/if}
-{:else}
-	{#if loggedIn}
-		{#if onlineStatus}
+{:else if loggedIn}
+	{#if onlineStatus}
 		<Sidebar />
 		<div class=" pt-10">
 			<Routes />
 		</div>
-		{/if}
-	{:else if typeof window != 'undefined' && $authstatusStore.code != 'authorized' && loggedIn == false}
-		<OpeningScreen />
-	{:else}
-		<SmallScreen />
 	{/if}
-
+{:else if typeof window != 'undefined' && $authstatusStore.code != 'authorized' && loggedIn == false}
+	<OpeningScreen />
+{:else}
+	<SmallScreen />
 {/if}
 <Toast />

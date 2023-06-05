@@ -72,7 +72,7 @@
 				a +
 				(data.newLoan == true ||
 				(data.newLoan != undefined &&
-					data.type.toLowerCase() != 'carryover' &&
+					data.type.toLowerCase() != 'carryover' &&	
 					timestampToDateTime(data.loan_date_iss) == new Date().toDateString())
 					? data.toBePaid + data.Opening_Fee - data.balance
 					: 0),

@@ -1,7 +1,10 @@
 <script>
+	import { screenSizeStore } from "../../../functions/funcs/stores";
+
 	export let title = '';
 	export let click;
 	export let danger;
+	
 </script>
 
 {#if danger==undefined||danger}

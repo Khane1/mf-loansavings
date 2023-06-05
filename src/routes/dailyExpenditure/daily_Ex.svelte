@@ -53,8 +53,11 @@
 			? $loanStore.value.sort((a, b) => b.data.loan_date_iss - a.data.loan_date_iss)
 			: [];
 
-	$: cashOut = loanlist.filter((e) => {
-		return timestampToDateTime(e.data.loan_date_iss) == new Date().toDateString();
+	$: cashOut = loanlist.filter(({ data }) => {
+		return (
+			timestampToDateTime(data.loan_date_iss) == new Date().toDateString() &&
+			data.type != 'CarryOver'
+		);
 	});
 	$: receiptlist =
 		$receiptStore != undefined && $receiptStore.value != undefined
@@ -69,6 +72,7 @@
 				a +
 				(data.newLoan == true ||
 				(data.newLoan != undefined &&
+					data.type.toLowerCase() != 'carryover' &&
 					timestampToDateTime(data.loan_date_iss) == new Date().toDateString())
 					? data.toBePaid + data.Opening_Fee - data.balance
 					: 0),
@@ -102,8 +106,7 @@
 		return Ids;
 	};
 	$: T_No_Inactive = JSON.stringify(
-			$loanStore != undefined &&
-			$loanStore.value != undefined
+		$loanStore != undefined && $loanStore.value != undefined
 			? $businessStore.clients - $loanStore.value.length
 			: 0
 	);
@@ -112,6 +115,7 @@
 	$: newLoans = loansToday.length;
 	$: T_No_cus_Paid = JSON.stringify(getCustomersPaid().length);
 </script>
+
 <span class="text-sm"> Capital/Expenditure </span>
 <div class="flex justify-between">
 	<PageTitle title="Daily Report" />

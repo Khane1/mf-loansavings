@@ -1,7 +1,6 @@
 <script>
 	import Avatar from '../../../components/reuseable/avatar/avatar.svelte';
 	import CtmrDtl from '../../../components/reuseable/customer/ctmrDtl.svelte';
-	import PageTitle from '../../../components/reuseable/title/pageTitle.svelte';
 	import { MoneyFormat } from '../../../functions/func_essential';
 	import GiveLoan from '../../loans/issueLoan/giveLoan/giveLoan.svelte';
 	import ConfirmDelete from './confirmDelete.svelte';
@@ -83,12 +82,3 @@
 	</div>
 </div>
 
-<style>
-	.stickerMenu {
-		position: fixed;
-		position: -webkit-sticky;
-		bottom: 0px;
-		left: 0px;
-		display: flex;
-	}
-</style>

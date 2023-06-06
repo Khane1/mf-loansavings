@@ -13,3 +13,11 @@ body {
 span{
 	cursor: pointer;
 }
+
+.stickerMenu {
+	position: fixed;
+	position: -webkit-sticky;
+	bottom: 0px;
+	left: 0px;
+	display: flex;
+}

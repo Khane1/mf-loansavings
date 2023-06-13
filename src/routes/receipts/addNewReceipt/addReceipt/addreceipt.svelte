@@ -4,7 +4,12 @@
 	import Input from '../../../../components/reuseable/input/input.svelte';
 	import GlTitle from '../../../../components/reuseable/loan/giveLoan/gl_title.svelte';
 	import Modal from '../../../../components/reuseable/modal/modal.svelte';
-	import { dateDiffInDays, getDateToday, MoneyFormat } from '../../../../functions/func_essential';
+	import {
+		convertCustomDate4InputMin,
+		dateDiffInDays,
+		getDateToday,
+		MoneyFormat
+	} from '../../../../functions/func_essential';
 	import { createReceipt } from '../../../../functions/funcs/firebase/userFuncs/fb_receipts';
 	import { businessStore, customersStore } from '../../../../functions/funcs/stores';
 	import { cliq_notify } from '../../../../components/reuseable/notificationsToast/onNotify';
@@ -25,6 +30,8 @@
 	$: toBePaid = parseInt(interest) + parseInt(amount);
 	$: newBalance = loanData.balance - amount;
 	export let loanData;
+	let datepaid = new Date().toDateString();
+	let selected = 'today';
 </script>
 
 <!-- Borrower	Amount	Agent	Balance	Days left	Last paid -->
@@ -50,10 +57,10 @@
 					amount,
 					balance: newBalance,
 					days_left: JSON.stringify(dateDiffInDays(new Date(), loanData.loan_due.toDate())),
-					last_paid: new Date()
+					last_paid: new Date(datepaid)
 				},
 				newBalance,
-				loanData,
+				loanData
 			);
 		} else {
 			cliq_notify('d', "You can't deposit more than the required amount. ");
@@ -92,8 +99,45 @@
 
 				<div>
 					<GlTitle title={'Payment date'} />
-					<div class="">
-						{new Date().toDateString()}
+					<div class="space-x-5 text-sm mt-2">
+						<span
+							on:click={() => {
+								selected = 'today';
+								datepaid = new Date().toDateString();
+							}}
+							on:keypress
+							class="{selected == 'today'
+								? 'bg-slate-500 text-white'
+								: ''} py-1 rounded border px-3 ">Today</span
+						>
+						<span
+							on:click={() => {
+								selected = 'change';
+							}}
+							on:keypress
+							class="{selected == 'change'
+								? 'bg-slate-500 text-white'
+								: ''} py-1 rounded border px-3">Change date</span
+						>
+					</div>
+					<div class="pt-5">
+						{#if selected != 'today' || datepaid != new Date().toDateString()}
+							<div class="flex justify-between border">
+								<div class="pl-2 text-md">{new Date(datepaid).toDateString()}</div>
+								<div>
+									<input
+										class="pl-3 border text-md"
+										type="date"
+										bind:value={datepaid}
+										max={convertCustomDate4InputMin(new Date().toDateString())}
+									/>
+								</div>
+							</div>
+						{:else}
+							<div>
+								{new Date(datepaid).toDateString()}
+							</div>
+						{/if}
 					</div>
 				</div>
 			</div>

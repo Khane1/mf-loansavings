@@ -32,17 +32,6 @@
 			? $authstatusStore.code == 'authorized'
 			: false;
 
-	// function refresh() {
-	// 	console.log('log');
-	// 	checkIfSignedIn().then((e) => {
-	// 		if (e != null) {
-	// 			customerTablelistener($businessStore.BusinessId);
-	// 			getLoans($businessStore.BusinessId);
-	// 			getReceipts($businessStore.BusinessId);
-	// 			getTeam($businessStore.BusinessId);
-	// 		}
-	// 	});
-	// }
 	$: onlineStatus = typeof window != 'undefined' ? navigator.onLine : false;
 	onMount((e) => {
 		screenSizeStore.update((e) => {

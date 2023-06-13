@@ -115,7 +115,6 @@
 	$: newLoans = loansToday.length;
 	$: T_No_cus_Paid = JSON.stringify(getCustomersPaid().length);
 </script>
-
 <span class="text-sm"> Capital/Expenditure </span>
 <div class="flex justify-between">
 	<PageTitle title="Daily Report" />

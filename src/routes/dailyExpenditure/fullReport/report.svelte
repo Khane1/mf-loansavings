@@ -37,6 +37,7 @@
 								<hr class="w-10" />
 							</div>
 							<CtmrDtl title={'Active Loans paid today'} data={val.data.T_No_cus_Paid ?? ''} />
+
 						</div>
 					</div>
 				</div>

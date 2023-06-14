@@ -32,6 +32,8 @@
 	export let loanData;
 	let datepaid = new Date().toDateString();
 	let selected = 'today';
+	var today = new Date();
+	var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
 </script>
 
 <!-- Borrower	Amount	Agent	Balance	Days left	Last paid -->
@@ -57,7 +59,7 @@
 					amount,
 					balance: newBalance,
 					days_left: JSON.stringify(dateDiffInDays(new Date(), loanData.loan_due.toDate())),
-					last_paid: new Date(datepaid)
+					last_paid: new Date(datepaid + ' ' + time)
 				},
 				newBalance,
 				loanData
@@ -121,7 +123,7 @@
 						>
 					</div>
 					<div class="pt-5">
-						{#if selected != 'today' || datepaid != new Date().toDateString()}
+						{#if selected != 'today'}
 							<div class="flex justify-between border">
 								<div class="pl-2 text-md">{new Date(datepaid).toDateString()}</div>
 								<div>

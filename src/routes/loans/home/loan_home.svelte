@@ -44,7 +44,13 @@
 	$: completeLoanCustomers = customer.filter((e) => {
 		return e.data.status == 'complete';
 	});
+	$: expiredLoans = list.filter((loan) => {
+		return loan.data?.loan_due != undefined
+			? dateDiffInDays(new Date(), loan.data.loan_due.toDate()) < 3 && loan.data.balance > 0
+			: 0;
+	});
 	let searchedStatus = false;
+	let showExpired = false;
 </script>
 
 <!-- {list.reduce((a, { data }) => a + data.toBePaid - data.balance, 0)} -->
@@ -89,6 +95,19 @@
 			{/if}
 		</div>
 		<div class="">
+			{#if expiredLoans.length > 0}
+				<button
+					on:click={() => {
+						showExpired = !showExpired;
+					}}
+					on:keydown
+					class="{!showExpired
+						? 'bg-red-500 hover:bg-red-600'
+						: 'bg-blue-500 hover:bg-blue-600'}  btn mx-2 px-5 py-2 rounded-md text-slate-50 text-xs font-medium"
+				>
+					{!showExpired ? expiredLoans.length + ' Expired Loans' : 'Return to loans'}
+				</button>
+			{/if}
 			<span class="text-sm border  px-2 mx-2">Results: {list.length}</span>
 			<!-- <span class="text-sm border  px-2 mx-2">Total: {MoneyFormat(total)}</span> -->
 		</div>
@@ -114,9 +133,10 @@
 		{#if !searchedStatus}
 			<div class="text-xs">These are loans from today.</div>
 		{/if}
-
 		<div>
 			<LoanTable
+				bind:expiredLoans
+				bind:showExpired
 				bind:list
 				bind:capital
 				bind:activeLoanCustomers

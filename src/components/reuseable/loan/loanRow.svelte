@@ -1,5 +1,5 @@
 <script>
-	import { calculateInterest, MoneyFormat, timestampToDateTime } from "../../../functions/func_essential";
+	import { calculateInterest, dateDiffInDays, MoneyFormat, timestampToDateTime } from "../../../functions/func_essential";
 
 
     export let loan,index;
@@ -21,6 +21,6 @@
     <!-- {MoneyFormat(item.total)} -->
 </td>
 <td class="text-sm text-gray-900 font-light px-6 py-2 whitespace-nowrap">
-   {timestampToDateTime(loan.loan_date_iss)}
+   {dateDiffInDays(new Date(), loan.loan_due.toDate())}
     <!-- {MoneyFormat(item.total)} -->
 </td>

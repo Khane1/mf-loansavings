@@ -57,7 +57,7 @@ export async function getLoans(bid) {
 
         if (activeRes.docs.length != 0) {
             activeRes.docs.forEach((val) => {
-                checkLoanStatus(bid, val.data())
+                // checkLoanStatus(bid, val.data())
                 if (list.filter(e => e.customerId === val.id).length == 0) {
                     list = [...list, { data: val.data(), customer_id: val.id }]
                 } else {
@@ -111,15 +111,21 @@ export async function deleteLoan(business, loanData) {
     }
 }
 let completelist = []
-async function checkLoanStatus(bid, loan) {
-    if (dateDiffInDays(new Date(), loan.loan_due.toDate()) <= 0 && !completelist.includes(loan.customerId)) {
-        let newLoan = convertToNewLoan(loan);
-        loan['status'] = 'CarryOver'
-        loan['CarryOverID'] = newLoan.loanId
-        await updateDoc(loanDoc(bid, loan.loanId), loan)
-        await setDoc(loanDoc(bid, newLoan.loanId), newLoan)
-        completelist = [...completelist, loan.customerId]
+export async function checkLoanStatus(bid, loan) {
+    try {
+        if (dateDiffInDays(new Date(), loan.loan_due.toDate()) > 0 && !completelist.includes(loan.customerId)) {
+            let newLoan = convertToNewLoan(loan);
+            loan['status'] = 'CarryOver'
+            loan['CarryOverID'] = newLoan.loanId
+            await updateDoc(loanDoc(bid, loan.loanId), loan)
+            await setDoc(loanDoc(bid, newLoan.loanId), newLoan)
+            cliq_notify('s', 'CarryOver Success')
+            completelist = [...completelist, loan.customerId]
+        }else cliq_notify('w', 'Can\'t update loan')
+    } catch (error) {
+        cliq_notify('d', 'CarryOver Failed')
     }
+
 }
 
 export async function getLoansByDate(bid, from, to) {

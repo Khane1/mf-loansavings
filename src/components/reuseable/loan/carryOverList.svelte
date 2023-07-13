@@ -38,23 +38,27 @@
 				: 'Days left ' + dateDiffInDays(new Date(), loan.data.loan_due.toDate())}
 			<!-- {MoneyFormat(item.total)} -->
 		</td>
-		<td class="text-xs text-gray-900 font-light px-6 py-2 whitespace-nowrap">
-			<Modal
-				modalTitle={'Are you sure?'}
-				title={'CarryOver'}
-				close={() => {}}
-				createTitle={'CarryOver'}
-				action={() => {
-					checkLoanStatus($businessStore.BusinessId, loan.data);
-				}}
-			>
-				<div class="text-lg flex justify-center text-center">
-					Do you want to Carry
-					<br />
-					{loan.data.borrower}'s Loan Over?
-				</div>
-			</Modal>
-		</td>
+		{#if dateDiffInDays(new Date(), loan.data.loan_due.toDate()) <= 0}
+			<td class="text-xs text-gray-900 font-light px-6 py-2 whitespace-nowrap">
+				<Modal
+					modalTitle={'Are you sure?'}
+					title={'CarryOver'}
+					close={() => {}}
+					createTitle={'CarryOver'}
+					action={() => {
+						checkLoanStatus($businessStore.BusinessId, loan.data);
+					}}
+				>
+					<div class="text-lg flex justify-center text-center">
+						Do you want to Carry
+						<br />
+						{loan.data.borrower}'s Loan Over?
+					</div>
+				</Modal>
+			</td>
+		{:else}
+			<div />
+		{/if}
 		<td class="text-xs text-gray-900 font-light px-6 py-2 whitespace-nowrap">
 			<Modal
 				modalTitle={'Are you sure?'}
@@ -79,8 +83,7 @@
 			>
 				<div class="text-lg flex justify-center text-center">
 					Is
-					{loan.data.borrower}'s
-					Loan complete?
+					{loan.data.borrower}'s Loan complete?
 				</div>
 				<div class="text-center mt-2">
 					A receipt will be added and

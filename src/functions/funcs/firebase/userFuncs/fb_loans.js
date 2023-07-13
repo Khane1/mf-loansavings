@@ -113,7 +113,7 @@ export async function deleteLoan(business, loanData) {
 let completelist = []
 export async function checkLoanStatus(bid, loan) {
     try {
-        if (dateDiffInDays(new Date(), loan.loan_due.toDate()) > 0 && !completelist.includes(loan.customerId)) {
+        if (dateDiffInDays(new Date(), loan.loan_due.toDate()) <= 0 && !completelist.includes(loan.customerId)) {
             let newLoan = convertToNewLoan(loan);
             loan['status'] = 'CarryOver'
             loan['CarryOverID'] = newLoan.loanId
